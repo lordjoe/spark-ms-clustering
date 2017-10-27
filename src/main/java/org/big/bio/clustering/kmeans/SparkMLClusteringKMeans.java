@@ -1,15 +1,12 @@
-package org.sps.learning.spark.algorithms.kmeans;
+package org.big.bio.clustering.kmeans;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.clustering.KMeans;
 import org.apache.spark.mllib.clustering.KMeansModel;
-import org.sps.learning.spark.utils.SparkUtil;
+import org.big.bio.utils.SparkUtil;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
-
-import java.util.Arrays;
 
 
 /**

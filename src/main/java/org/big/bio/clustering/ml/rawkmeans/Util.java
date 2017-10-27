@@ -1,4 +1,4 @@
-package org.sps.learning.spark.algorithms.ml.rawkmeans;
+package org.big.bio.clustering.ml.rawkmeans;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.spark.mllib.linalg.DenseVector;

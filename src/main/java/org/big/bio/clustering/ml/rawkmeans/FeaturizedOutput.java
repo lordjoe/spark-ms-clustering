@@ -1,4 +1,4 @@
-package org.sps.learning.spark.algorithms.ml.rawkmeans;
+package org.big.bio.clustering.ml.rawkmeans;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;

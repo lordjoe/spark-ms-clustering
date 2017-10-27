@@ -1,6 +1,6 @@
 <assembly>
 
-    <id>spark-java8-learning</id>
+    <id>spark-ms-clustering</id>
 
     <formats>
         <format>zip</format>

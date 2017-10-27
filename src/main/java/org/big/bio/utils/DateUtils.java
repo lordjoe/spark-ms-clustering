@@ -1,4 +1,4 @@
-package org.sps.learning.spark.utils;
+package org.big.bio.utils;
 
 import org.apache.log4j.Logger;
 

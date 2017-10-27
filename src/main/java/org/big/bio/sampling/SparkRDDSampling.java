@@ -1,4 +1,4 @@
-package org.sps.learning.spark.sampling;
+package org.big.bio.sampling;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;

@@ -1,11 +1,11 @@
-package org.sps.learning.spark.algorithms.top;
+package org.big.bio.clustering.top;
 
 // STEP-0: import required classes and interfaces
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.sps.learning.spark.utils.SparkUtil;
+import org.big.bio.utils.SparkUtil;
 import scala.Tuple2;
 
 import java.io.Serializable;

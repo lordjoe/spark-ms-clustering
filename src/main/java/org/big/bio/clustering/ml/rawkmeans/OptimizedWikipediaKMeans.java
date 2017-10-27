@@ -1,4 +1,4 @@
-package org.sps.learning.spark.algorithms.ml.rawkmeans;
+package org.big.bio.clustering.ml.rawkmeans;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -10,7 +10,7 @@ import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.mllib.linalg.DenseVector;
 import org.apache.spark.mllib.linalg.Vector;
-import org.sps.learning.spark.utils.SparkUtil;
+import org.big.bio.utils.SparkUtil;
 import scala.Tuple2;
 
 import java.io.BufferedWriter;

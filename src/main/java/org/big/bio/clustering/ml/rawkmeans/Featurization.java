@@ -1,4 +1,4 @@
-package org.sps.learning.spark.algorithms.ml.rawkmeans;
+package org.big.bio.clustering.ml.rawkmeans;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -7,8 +7,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFunction;
-import org.sps.learning.spark.utils.DateUtils;
-import org.sps.learning.spark.utils.SparkUtil;
+import org.big.bio.utils.DateUtils;
+import org.big.bio.utils.SparkUtil;
 import scala.Tuple2;
 
 import java.io.Serializable;
