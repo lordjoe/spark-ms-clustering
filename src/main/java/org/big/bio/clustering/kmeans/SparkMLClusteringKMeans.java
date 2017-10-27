@@ -1,5 +1,8 @@
 package org.big.bio.clustering.kmeans;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -10,56 +13,31 @@ import org.apache.spark.mllib.linalg.Vectors;
 
 
 /**
+ * The SparkML Clustering KMeans used a Bisecting Kmeans approach as hierarchical clustering approached.
+ * The input of the algorithm is the folder that contains all the Projects and corresponding spectra.
  *
- * http://spark.apache.org/docs/2.1.0/mllib-clustering.html#k-means
+ * @author ypriverol
  *
  */
-public class SparkMLClusteringKMeans {
+public class SparkMLClusteringKMeans extends MSClustering{
 
     private static final Logger LOGGER = Logger.getLogger(SparkMLClusteringKMeans.class);
 
-
     public static void main(String[] args) {
 
-        JavaSparkContext context = SparkUtil.createJavaSparkContext("SparkMLClustering", "local[*]");
+        SparkMLClusteringKMeans kmeansClustering = new SparkMLClusteringKMeans();
 
-        JavaRDD<String> data = context.textFile("./data/gene/data.csv.gz");
-        LOGGER.info("count = " + data.count());
+        try {
 
-        final String  header = data.first();
-        data = data.filter(row -> !row.equalsIgnoreCase(header));
-        LOGGER.info("count = " + data.count());
-
-        JavaRDD<Vector> parsedData = data.map(line -> {
-            String[] sarray = line.split(",");
-            double[] values = new double[sarray.length-1];
-            for (int i = 1; i < sarray.length; i++) {
-                values[i - 1] = Double.parseDouble(sarray[i]);
+            CommandLine cmd = kmeansClustering.parseCommandLine(args, kmeansClustering.getCLIParameters());
+            if(!cmd.hasOption("i")){
+                kmeansClustering.printHelpCommands();
+                System.exit( -1 );
             }
-            return Vectors.dense(values);
-        });
-        parsedData.cache();
+            String inputPath = cmd.getOptionValue("i");
 
-// Cluster the data into two classes using KMeans
-        int numClusters = 100;
-        int numIterations = 200;
-        KMeansModel clusters = org.apache.spark.mllib.clustering.KMeans.train(parsedData.rdd(), numClusters, numIterations);
-
-        System.out.println("Cluster centers:");
-        for (Vector center: clusters.clusterCenters()) {
-            System.out.println(" " + center);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        double cost = clusters.computeCost(parsedData.rdd());
-        System.out.println("Cost: " + cost);
-
-// Evaluate clustering by computing Within Set Sum of Squared Errors
-        double WSSSE = clusters.computeCost(parsedData.rdd());
-        System.out.println("Within Set Sum of Squared Errors = " + WSSSE);
-
-// Save and load model
-        clusters.save(context.sc(), "./hdfs/KMeansModel");
-        KMeansModel sameModel = KMeansModel.load(context.sc(),
-                "./hdfs/KMeansModel");
     }
-
 }
