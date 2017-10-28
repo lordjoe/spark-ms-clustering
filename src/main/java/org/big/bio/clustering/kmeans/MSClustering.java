@@ -27,7 +27,11 @@ public class MSClustering implements IMSClustering{
     public static String APPLICATION_NAME  = "SparkMLClusteringKMeans";
 
     public MSClustering(){
-        context = SparkUtil.createJavaSparkContext(APPLICATION_NAME);
+        context = SparkUtil.createJavaSparkContext(APPLICATION_NAME, "local[*]");
+    }
+
+    public MSClustering(String confFile){
+        context = SparkUtil.createJavaSparkContextWithFile(APPLICATION_NAME, confFile);
     }
 
     /**
@@ -35,11 +39,13 @@ public class MSClustering implements IMSClustering{
      * a set of default parameters for the running of the algorithm.
      * @return CommandLine Options
      */
-    @Override
-    public Options getCLIParameters() {
+
+    public static Options getCLIParameters() {
         Options defaultOptions = new Options();
         Option optionFile = new Option("i", "input-path", true, "Input Path containing all the mass spectra");
+        Option optionConf = new Option("c", "conf", true, "Configuration file for the spark application");
         defaultOptions.addOption(optionFile);
+        defaultOptions.addOption(optionConf);
         return defaultOptions;
     }
 
@@ -50,8 +56,7 @@ public class MSClustering implements IMSClustering{
      * @return
      * @throws ParseException
      */
-    @Override
-    public CommandLine parseCommandLine(String[] args, Options options) throws ParseException {
+    public static CommandLine parseCommandLine(String[] args, Options options) throws ParseException {
         CommandLineParser parser = new PosixParser();
         return parser.parse(options, args);
     }
@@ -59,9 +64,9 @@ public class MSClustering implements IMSClustering{
     /**
      * Print the commandline options
      */
-    public void printHelpCommands(){
+    public static void printHelpCommands(){
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(APPLICATION_NAME, this.getCLIParameters());
+        formatter.printHelp(APPLICATION_NAME, getCLIParameters());
     }
 
 

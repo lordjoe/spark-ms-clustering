@@ -1,7 +1,10 @@
 package org.big.bio.utils;
 
+import org.apache.commons.configuration.ConfigurationFactory;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
+
+import java.io.File;
 
 /**
  * This is a utility class to create JavaSparkContext 
@@ -44,11 +47,13 @@ public class SparkUtil {
      * @param applicationName Application Name
      * @return JavaSparkContext
      */
-   public static JavaSparkContext createJavaSparkContext(String applicationName){
-        SparkConf conf = new SparkConf().setAppName(applicationName);
+   public static JavaSparkContext createJavaSparkContextWithFile(String applicationName, String confFile){
+       SparkConf conf = new SparkConf().setAppName(applicationName);
         // This is need to re-write the corresponding partition.
-        conf.set("spark.hadoop.validateOutputSpecs", "false");
-        return new JavaSparkContext(conf);
+       conf.set("spark.hadoop.validateOutputSpecs", "false");
+       JavaSparkContext sparkContext = new JavaSparkContext("local[*]", applicationName);
+       sparkContext.addFile(confFile);
+       return sparkContext;
     }
 
 

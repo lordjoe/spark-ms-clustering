@@ -20,19 +20,4 @@ import org.apache.commons.cli.ParseException;
  */
 public interface IMSClustering {
 
-    /**
-     * Every clustering method should implement they are own parameters system.
-     * For example for kmeans in the number of clusters, for agglomerate the accuracy.
-     *
-     * @return
-     */
-    public Options getCLIParameters();
-
-    /**
-     * Method to parseCommandLine the commandline options from the command
-     * @param args Tools commands
-     * @param options options
-     * @return Commandline parser
-     */
-    public CommandLine parseCommandLine(String[] args, Options options) throws ParseException;
 }

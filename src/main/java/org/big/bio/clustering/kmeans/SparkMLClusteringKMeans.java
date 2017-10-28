@@ -25,16 +25,26 @@ public class SparkMLClusteringKMeans extends MSClustering{
 
     public static void main(String[] args) {
 
-        SparkMLClusteringKMeans kmeansClustering = new SparkMLClusteringKMeans();
-
+        IMSClustering clusteringMethod;
         try {
 
-            CommandLine cmd = kmeansClustering.parseCommandLine(args, kmeansClustering.getCLIParameters());
+            CommandLine cmd = MSClustering.parseCommandLine(args, MSClustering.getCLIParameters());
             if(!cmd.hasOption("i")){
-                kmeansClustering.printHelpCommands();
+                MSClustering.printHelpCommands();
                 System.exit( -1 );
             }
+            if(!cmd.hasOption("c")){
+                LOGGER.info("The algorithm will run in local mode");
+                clusteringMethod = new SparkMLClusteringKMeans();
+            }else{
+                clusteringMethod = new MSClustering(cmd.getOptionValue("c"));
+            }
+
             String inputPath = cmd.getOptionValue("i");
+
+
+
+
 
         } catch (ParseException e) {
             e.printStackTrace();
