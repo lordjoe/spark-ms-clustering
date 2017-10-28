@@ -4,6 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.clustering.KMeansModel;
@@ -41,6 +42,10 @@ public class SparkMLClusteringKMeans extends MSClustering{
             }
 
             String inputPath = cmd.getOptionValue("i");
+
+            JavaPairRDD<String, String> mgfFiles = clusteringMethod.context().wholeTextFiles(inputPath);
+            LOGGER.info("Number of input files = " + mgfFiles.count());
+
 
 
 

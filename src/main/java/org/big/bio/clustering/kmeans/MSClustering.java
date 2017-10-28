@@ -22,16 +22,34 @@ import org.big.bio.utils.SparkUtil;
  */
 public class MSClustering implements IMSClustering{
 
-    public JavaSparkContext context;
+    // The JavaSpark Context for the corresponding algorithm implementation
+    private final JavaSparkContext context;
 
+    // Java Application Name for the Spark Application
     public static String APPLICATION_NAME  = "SparkMLClusteringKMeans";
 
+    /**
+     * Default Spark Constructor, it runs in local[*]
+     */
     public MSClustering(){
         context = SparkUtil.createJavaSparkContext(APPLICATION_NAME, "local[*]");
     }
 
+    /**
+     * The contructor using the confile for the Spark Application
+     * @param confFile
+     */
     public MSClustering(String confFile){
         context = SparkUtil.createJavaSparkContextWithFile(APPLICATION_NAME, confFile);
+    }
+
+    /**
+     * The method to retrieve the JavaSpark Context for the algorithm.
+     * @return
+     */
+    @Override
+    public JavaSparkContext context(){
+        return context;
     }
 
     /**
