@@ -8,11 +8,14 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.clustering.KMeansModel;
+import org.big.bio.keys.BinMZKey;
 import org.big.bio.utils.IOUtilities;
 import org.big.bio.utils.SparkUtil;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+
+import java.util.List;
 
 
 /**
@@ -45,11 +48,9 @@ public class SparkMLClusteringKMeans extends MSClustering{
 
             String inputPath = cmd.getOptionValue("i");
 
-            JavaPairRDD<String, String> mgfFileStrings = clusteringMethod.context().wholeTextFiles(inputPath);
+            JavaPairRDD<String, String> spectra = IOUtilities.parseMGFRDD(clusteringMethod.context(), inputPath);
 
-            JavaPairRDD<String, ISpectrum> spectra = IOUtilities.convertStringToISpectrumRDD(mgfFileStrings);
-
-            LOGGER.info("Number of input files = " + spectra.count());
+            LOGGER.info("Number of Spectra = " + spectra.count());
 
 
         } catch (ParseException e) {

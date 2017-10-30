@@ -1,15 +1,24 @@
 package org.big.bio.utils;
 
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.PairFunction;
+import org.big.bio.io.MGFInputFormat;
+import org.big.bio.keys.BinMZKey;
+import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class IOUtilities {
 
@@ -85,7 +94,27 @@ public final class IOUtilities {
         return sb.toString();
     }
 
-    public static JavaPairRDD<String, ISpectrum> convertStringToISpectrumRDD(JavaPairRDD<String, String> mgfFileStrings) {
-        return null;
+    /**
+     * This method parse the folder containing all the mgf files into a MzBin, ISpectrum. It is important to notice that
+     * the current data structure allows that the BinMZKey can contains multiple spectra for the same precursor binned value. For
+     * this reason the system returns a MZkey and a List of ISpectrum.
+     *
+     * @param context   JavaSpark Context
+     * @param inputPath Folder that contains all the spectra files (mgf input)
+     * @return Map with the BinMZKey corresponding to the precursor Mass and the List of Spectra.
+     */
+    public static JavaPairRDD<String, String> parseMGFRDD(JavaSparkContext context, String inputPath) {
+
+        Class inputFormatClass = MGFInputFormat.class;
+        Class keyClass         = String.class;
+        Class valueClass       = String.class;
+
+        return context.newAPIHadoopFile(
+                inputPath,
+                inputFormatClass,
+                keyClass,
+                valueClass,
+                context.hadoopConfiguration()
+        );
     }
 }
