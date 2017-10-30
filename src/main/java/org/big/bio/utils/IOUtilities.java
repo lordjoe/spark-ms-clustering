@@ -1,5 +1,6 @@
 package org.big.bio.utils;
 
+import org.apache.spark.api.java.JavaPairRDD;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
@@ -84,4 +85,7 @@ public final class IOUtilities {
         return sb.toString();
     }
 
+    public static JavaPairRDD<String, ISpectrum> convertStringToISpectrumRDD(JavaPairRDD<String, String> mgfFileStrings) {
+        return null;
+    }
 }
