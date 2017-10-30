@@ -51,8 +51,10 @@ public class SparkUtil {
        SparkConf conf = new SparkConf().setAppName(applicationName);
         // This is need to re-write the corresponding partition.
        conf.set("spark.hadoop.validateOutputSpecs", "false");
+       conf.set("spark.kryo.classesToRegister", "org.apache.hadoop.io.LongWritable, org.apache.hadoop.io.Text");
        JavaSparkContext sparkContext = new JavaSparkContext("local[*]", applicationName);
        sparkContext.addFile(confFile);
+
        return sparkContext;
     }
 

@@ -49,6 +49,7 @@ public class SparkMLClusteringKMeans extends MSClustering{
             String inputPath = cmd.getOptionValue("i");
 
             JavaPairRDD<String, String> spectra = IOUtilities.parseMGFRDD(clusteringMethod.context(), inputPath);
+            spectra.collect().count();
 
             LOGGER.info("Number of Spectra = " + spectra.count());
 
