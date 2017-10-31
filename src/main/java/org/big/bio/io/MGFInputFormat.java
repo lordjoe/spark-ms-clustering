@@ -19,8 +19,10 @@ import org.apache.hadoop.util.LineReader;
 import java.io.IOException;
 
 /**
- * Splitter that reads mgf files
- * nice enough to put the begin and end tags on separate lines
+ * The FileInputFormat enable to read in well structured data block in Spark. The current MGFInputFormat
+ * defines how to read mgf block files.
+ *
+ * @author ypriverol
 */
 
 public class MGFInputFormat extends FileInputFormat<Text, Text> {
@@ -57,8 +59,9 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
         private Text startSpectrum = new Text("BEGIN IONS");
         private Text endSpectrum = new Text("END IONS");
 
-        public void initialize(InputSplit genericSplit,
-                               TaskAttemptContext context) throws IOException {
+        @Override
+        public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException {
+
             FileSplit split = (FileSplit) genericSplit;
             Configuration configuration = context.getConfiguration();
 
@@ -100,13 +103,14 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
         }
 
         /**
-         * look for a scan tag then read until it closes
+         * Get the Scan Key Value
          *
          * @return true if there is data
          * @throws IOException
          */
+        @Override
         public boolean nextKeyValue() throws IOException {
-            int newSize = 0;
+            int newSize;
             while (pos < start) {
                 newSize = input.readLine(buffer);
                 // we are done

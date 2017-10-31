@@ -2,23 +2,19 @@ package org.big.bio.utils;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.PairFunction;
 import org.big.bio.io.MGFInputFormat;
-import org.big.bio.keys.BinMZKey;
-import scala.Tuple2;
+
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.*;
-import java.util.stream.Collectors;
+
 
 public final class IOUtilities {
 
