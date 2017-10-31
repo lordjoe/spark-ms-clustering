@@ -1,4 +1,4 @@
-package org.big.bio.io;
+package org.big.bio.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;

@@ -1,4 +1,4 @@
-package org.big.bio.io;
+package org.big.bio.transformers;
 
 import org.apache.hadoop.io.Text;
 import org.apache.spark.api.java.function.PairFlatMapFunction;

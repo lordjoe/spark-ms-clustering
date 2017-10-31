@@ -2,7 +2,7 @@ package org.big.bio.utils;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.big.bio.io.MGFInputFormat;
+import org.big.bio.hadoop.MGFInputFormat;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
