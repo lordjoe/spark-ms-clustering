@@ -1,6 +1,5 @@
 package org.big.bio.keys;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,6 +1,5 @@
 package org.big.bio.transformers;
 
-import org.apache.hadoop.io.Text;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.clustering.pride.ConfigurableProperties;
@@ -53,8 +52,7 @@ public class PrecursorBinnerTransformer implements PairFlatMapFunction<Tuple2<MZ
 
         boolean offsetBins = context.hadoopConfiguration().getBoolean("pride.cluster.offset.bins", false);
         if (offsetBins) {
-            IWideBinner offSetHalf = (IWideBinner) binner.offSetHalf();
-            binner = offSetHalf;
+            binner = (IWideBinner) binner.offSetHalf();
         }
     }
 

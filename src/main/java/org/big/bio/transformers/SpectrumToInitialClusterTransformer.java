@@ -1,13 +1,10 @@
 package org.big.bio.transformers;
 
-import org.apache.hadoop.io.Text;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.big.bio.clustering.IMSClusterConfiguration;
 import org.big.bio.clustering.pride.ClusterHadoopDefaults;
 import org.big.bio.clustering.pride.ConfigurableProperties;
 import org.big.bio.keys.MZKey;
-import org.big.bio.utils.IOUtilities;
 import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
