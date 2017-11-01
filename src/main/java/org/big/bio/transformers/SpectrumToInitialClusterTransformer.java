@@ -46,7 +46,7 @@ import java.util.UUID;
  * <p>
  * Created by Yasset Perez-Riverol  (ypriverol@gmail.com) on 01/11/2017.
  */
-public class SpectrumToInitialCluster implements PairFlatMapFunction<Tuple2<String, ISpectrum>, MZKey, ICluster> {
+public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<Tuple2<String, ISpectrum>, MZKey, ICluster> {
 
     private static final double BIN_OVERLAP = 0;
 
@@ -81,7 +81,7 @@ public class SpectrumToInitialCluster implements PairFlatMapFunction<Tuple2<Stri
      *
      * @param context
      */
-    public SpectrumToInitialCluster( JavaSparkContext context){
+    public SpectrumToInitialClusterTransformer(JavaSparkContext context){
 
         // read and customize configuration, default will be used if not provided
         ConfigurableProperties.configureAnalysisParameters(context.hadoopConfiguration());

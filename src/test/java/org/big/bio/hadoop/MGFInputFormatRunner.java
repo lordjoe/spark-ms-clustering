@@ -7,7 +7,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
-import org.big.bio.transformers.MGFStringTupleToSpectrumTuple;
+import org.big.bio.transformers.MGFStringToSpectrumTransformer;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -38,7 +38,7 @@ public class MGFInputFormatRunner {
 
         JavaPairRDD<Text, Text> spectraAsStrings = sparkConf.newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, hadoopConf);
 
-        JavaPairRDD<String, ISpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple());
+        JavaPairRDD<String, ISpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringToSpectrumTransformer());
 
         boolean forceShuffle = true;
         JavaRDD<ISpectrum> spectraToScore = spectra.values();

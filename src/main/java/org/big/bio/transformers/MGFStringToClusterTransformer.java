@@ -31,9 +31,9 @@ import java.util.List;
  * <p>
  * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 31/10/2017.
  */
-public class MGFStringTupleToClusterTuple implements PairFlatMapFunction<Tuple2<Text, Text>, String, ICluster> {
+public class MGFStringToClusterTransformer implements PairFlatMapFunction<Tuple2<Text, Text>, String, ICluster> {
 
-    public MGFStringTupleToClusterTuple(){
+    public MGFStringToClusterTransformer(){
     }
 
     @Override

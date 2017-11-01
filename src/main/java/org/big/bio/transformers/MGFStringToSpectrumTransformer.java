@@ -17,9 +17,9 @@ import java.util.List;
  *
  * @author Yasset Perez-Riverol
  */
-public class MGFStringTupleToSpectrumTuple implements PairFlatMapFunction<Tuple2<Text, Text>, String, ISpectrum> {
+public class MGFStringToSpectrumTransformer implements PairFlatMapFunction<Tuple2<Text, Text>, String, ISpectrum> {
 
-    public MGFStringTupleToSpectrumTuple() {
+    public MGFStringToSpectrumTransformer() {
 
     }
 

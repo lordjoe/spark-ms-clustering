@@ -6,12 +6,15 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.hadoop.MGFInputFormat;
+import org.big.bio.keys.BinMZKey;
 import org.big.bio.keys.MZKey;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -22,17 +25,17 @@ import java.io.IOException;
  * <p>
  * ==Overview==
  * <p>
- * This class
+ * This test class test the Binner Transformer class.
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 01/11/2017.
  */
-public class SpectrumToInitialClusterTest {
+public class PrecursorBinnerTransformerTest {
 
     private static final Logger LOGGER = Logger.getLogger(SpectrumToInitialClusterTest.class);
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
+        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test Binner Cluster to Cluster", "local[*]");
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
 
         String hdfsFileName = "./data/spectra/";
@@ -47,9 +50,10 @@ public class SpectrumToInitialClusterTest {
         LOGGER.info("Number of Spectra = " + spectra.count());
 
         JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
-        LOGGER.info("Number of Spectra = " + initialClusters.count());
 
+        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
+
+        LOGGER.info("Number of Binned Clusters = " + precursorClusters.count());
 
     }
-
 }

@@ -7,13 +7,9 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
-import org.big.bio.hadoop.MGFInputFormat;
-import org.big.bio.hadoop.MGFInputFormatRunner;
-import org.big.bio.transformers.MGFStringTupleToClusterTuple;
-import org.big.bio.transformers.MGFStringTupleToSpectrumTuple;
+import org.big.bio.transformers.MGFStringToClusterTransformer;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
 
@@ -49,7 +45,7 @@ public class MGFInputToClusterRunner {
 
         JavaPairRDD<Text, Text> spectraAsStrings = sparkConf.newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, hadoopConf);
 
-        JavaPairRDD<String, ICluster> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToClusterTuple());
+        JavaPairRDD<String, ICluster> spectra = spectraAsStrings.flatMapToPair(new MGFStringToClusterTransformer());
 
         boolean forceShuffle = true;
         JavaRDD<ICluster> spectraToScore = spectra.values();
