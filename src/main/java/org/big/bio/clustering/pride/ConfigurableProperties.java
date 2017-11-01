@@ -73,9 +73,9 @@ public class ConfigurableProperties {
 
         // Spectra Related properties.
         Defaults.setNumberComparedPeaks(configuration.getInt(NUMBER_COMPARED_PEAKS_PROPERTY, Defaults.DEFAULT_NUMBER_COMPARED_PEAKS));
-        Defaults.setFragmentIonTolerance(configuration.getFloat(FRAGMENT_ION_TOLERANCE_PROPERTY, new Float(Defaults.DEFAULT_FRAGMENT_ION_TOLERANCE)));
-        Defaults.setRetainThreshold(configuration.getFloat(RETAIN_THRESHOLD_PROPERTY, new Float(Defaults.DEFAULT_RETAIN_THRESHOLD)));
-        Defaults.setSimilarityThreshold(configuration.getFloat(SIMILARITY_THRESHOLD_PROPERTY, new Float(Defaults.DEFAULT_SIMILARITY_THRESHOLD)));
+        Defaults.setFragmentIonTolerance(configuration.getFloat(FRAGMENT_ION_TOLERANCE_PROPERTY, Defaults.DEFAULT_FRAGMENT_ION_TOLERANCE));
+        Defaults.setRetainThreshold(configuration.getFloat(RETAIN_THRESHOLD_PROPERTY, (float) Defaults.DEFAULT_RETAIN_THRESHOLD));
+        Defaults.setSimilarityThreshold(configuration.getFloat(SIMILARITY_THRESHOLD_PROPERTY, (float) Defaults.DEFAULT_SIMILARITY_THRESHOLD));
         Defaults.setMinNumberComparisons(configuration.getInt(CDF_MIN_NUMBER_COMPARISONS, Defaults.DEFAULT_MIN_NUMBER_COMPARISONS));
         Defaults.setDefaultConsensusMinPeaks(configuration.getInt(CONSENSUS_SPEC_MIN_PEAKS, Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
 
@@ -83,8 +83,8 @@ public class ConfigurableProperties {
         Defaults.setDefaultSimilarityChecker(getSimilarityCheckerFromConfiguration(configuration));
 
         // Properties realated with the  the hadoop algorithm.
-        ClusterHadoopDefaults.setMajorPeakMZWindowSize(configuration.getFloat(MAJOR_PEAK_WINDOW_PROPERTY, new Float(ClusterHadoopDefaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW)));
-        ClusterHadoopDefaults.setSpectrumMergeMZWindowSize(configuration.getFloat(SPECTRUM_MERGE_WINDOW_PROPERTY, new Float(ClusterHadoopDefaults.DEFAULT_SPECTRUM_MERGE_WINDOW)));
+        ClusterHadoopDefaults.setMajorPeakMZWindowSize(configuration.getFloat(MAJOR_PEAK_WINDOW_PROPERTY, (float) ClusterHadoopDefaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW));
+        ClusterHadoopDefaults.setSpectrumMergeMZWindowSize(configuration.getFloat(SPECTRUM_MERGE_WINDOW_PROPERTY, (float) ClusterHadoopDefaults.DEFAULT_SPECTRUM_MERGE_WINDOW));
         ClusterHadoopDefaults.setEnableComparisonPeakFilter(configuration.getBoolean(ENABLE_COMPARISON_PEAK_FILTER, ClusterHadoopDefaults.DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));
         ClusterHadoopDefaults.setInitialHighestPeakFilter(configuration.getInt(INITIAL_HIGHEST_PEAK_FILTER, ClusterHadoopDefaults.DEFAULT_INITIAL_HIGHEST_PEAK_FILTER));
         ClusterHadoopDefaults.setMaximumNumberOfClusters(configuration.getInt(MAXIMUM_NUMBER_CLUSTERS, ClusterHadoopDefaults.DEFAULT_MAXIMUM_NUMBER_OF_CLUSTERS));

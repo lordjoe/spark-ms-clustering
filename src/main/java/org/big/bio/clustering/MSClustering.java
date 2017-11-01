@@ -76,7 +76,7 @@ public class MSClustering implements IMSClustering {
      * @throws ParseException
      */
     public static CommandLine parseCommandLine(String[] args, Options options) throws ParseException {
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
 

@@ -1,9 +1,5 @@
 package org.big.bio.clustering;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.spark.api.java.JavaSparkContext;
 
 /**
@@ -25,6 +21,6 @@ public interface IMSClustering {
      * This method returns the current spark context for the algorithm
      * @return JavaSparkContext
      */
-    public JavaSparkContext context();
+    JavaSparkContext context();
 
 }
