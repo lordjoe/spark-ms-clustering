@@ -4,7 +4,7 @@ package org.big.bio.keys;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 /**
- * The precursor MZKey is used to Sory precursors by the corresponding
+ * The precursor MZKey is used to sort precursors by the corresponding Mz Value.
  * <p/>
  */
 public class MZKey implements IKeyable<MZKey> {

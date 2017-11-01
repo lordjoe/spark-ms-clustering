@@ -21,8 +21,6 @@ public class SparkPRIDEClustering extends MSClustering {
 
     private static final Logger LOGGER = Logger.getLogger(SparkPRIDEClustering.class);
 
-    public static final String WINDOW_SIZE_PROPERTY = "mapper.window_size";
-
     public static void main(String[] args) {
 
         IMSClustering clusteringMethod;
