@@ -65,14 +65,6 @@ public class SpectrumToInitialCluster implements PairFlatMapFunction<Tuple2<Stri
     private IFunction<List<IPeak>, List<IPeak>> peakFilter;
 
     /**
-     * Reuse output text objects to avoid create many short lived objects
-     */
-    private Text keyOutputText = new Text();
-    private Text valueOutputText = new Text();
-
-    private JavaSparkContext context;
-
-    /**
      * Reuse normalizer
      */
     private IIntensityNormalizer intensityNormalizer = Defaults.getDefaultIntensityNormalizer();
@@ -91,8 +83,6 @@ public class SpectrumToInitialCluster implements PairFlatMapFunction<Tuple2<Stri
      */
     public SpectrumToInitialCluster( JavaSparkContext context){
 
-        this.context = context;
-
         // read and customize configuration, default will be used if not provided
         ConfigurableProperties.configureAnalysisParameters(context.hadoopConfiguration());
 
@@ -109,6 +99,12 @@ public class SpectrumToInitialCluster implements PairFlatMapFunction<Tuple2<Stri
 
     }
 
+    /**
+     * Transform the Spectrum into ICluster with the corresponding
+     * @param spectrumTuple
+     * @return
+     * @throws Exception
+     */
     @Override
     public Iterator<Tuple2<MZKey, ICluster>> call(Tuple2<String, ISpectrum> spectrumTuple) throws Exception {
 

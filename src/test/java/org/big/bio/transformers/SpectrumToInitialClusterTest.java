@@ -1,4 +1,4 @@
-package org.big.bio.hadoop;
+package org.big.bio.transformers;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
@@ -9,13 +9,14 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
 import org.big.bio.hadoop.MGFInputFormat;
 import org.big.bio.hadoop.MGFInputFormatRunner;
-import org.big.bio.transformers.MGFStringTupleToClusterTuple;
-import org.big.bio.transformers.MGFStringTupleToSpectrumTuple;
+import org.big.bio.keys.MZKey;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -26,19 +27,17 @@ import java.io.IOException;
  * <p>
  * ==Overview==
  * <p>
- * This class is used to test the MGF to Cluster representation. The class allows to read the Text from the
- * file and retrieve a cluster representation rather than ISpectrum.
- *
+ * This class
  * <p>
- * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 31/10/2017.
+ * Created by ypriverol (ypriverol@gmail.com) on 01/11/2017.
  */
-public class MGFInputToClusterRunner {
+public class SpectrumToInitialClusterTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MGFInputFormatRunner.class);
+    private static final Logger LOGGER = Logger.getLogger(SpectrumToInitialClusterTest.class);
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test MGF Read", "local[*]");
+        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
 
         String hdfsFileName = "./data/spectra/";
@@ -49,16 +48,13 @@ public class MGFInputToClusterRunner {
 
         JavaPairRDD<Text, Text> spectraAsStrings = sparkConf.newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, hadoopConf);
 
-        JavaPairRDD<String, ICluster> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToClusterTuple());
+        JavaPairRDD<String, ISpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringTupleToSpectrumTuple());
+        LOGGER.info("Number of Spectra = " + spectra.count());
 
-        boolean forceShuffle = true;
-        JavaRDD<ICluster> spectraToScore = spectra.values();
-        spectraToScore.coalesce(120, forceShuffle);
+        JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialCluster(sparkConf));
+        LOGGER.info("Number of Spectra = " + initialClusters.count());
 
-        spectraToScore = spectraToScore.persist(StorageLevel.DISK_ONLY());
 
-        long pairs = spectraToScore.count();
-        LOGGER.info("Read  " + pairs + " records");
     }
 
 }
