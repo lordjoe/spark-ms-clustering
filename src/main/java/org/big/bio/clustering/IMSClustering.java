@@ -1,4 +1,4 @@
-package org.big.bio.clustering.kmeans;
+package org.big.bio.clustering;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -17,7 +17,7 @@ import org.apache.spark.api.java.JavaSparkContext;
  * <p>
  * This class
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 27/10/2017.
+ * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 27/10/2017.
  */
 public interface IMSClustering {
 

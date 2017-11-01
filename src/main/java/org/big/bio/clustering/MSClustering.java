@@ -1,7 +1,8 @@
-package org.big.bio.clustering.kmeans;
+package org.big.bio.clustering;
 
 import org.apache.commons.cli.*;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.big.bio.clustering.IMSClustering;
 import org.big.bio.utils.SparkUtil;
 
 /**
@@ -18,15 +19,15 @@ import org.big.bio.utils.SparkUtil;
  * other variables.
  *
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 27/10/2017.
+ * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 27/10/2017.
  */
-public class MSClustering implements IMSClustering{
+public class MSClustering implements IMSClustering {
 
     // The JavaSpark Context for the corresponding algorithm implementation
     private final JavaSparkContext context;
 
     // Java Application Name for the Spark Application
-    public static String APPLICATION_NAME  = "SparkMLClusteringKMeans";
+    public static String APPLICATION_NAME  = "SparkPRIDEClustering";
 
     /**
      * Default Spark Constructor, it runs in local[*]

@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
  * Some key utilities that can be used to convert from a double key to String and
  * and the way back.
  *
- * @author ypriverol
+ * @author Yasset Perez-Riverol
  */
 
 public class KeyUtilities {

@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  * <p>
  * This class test, will test the BinMZ key for the Precursor mass.
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 30/10/2017.
+ * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 30/10/2017.
  */
 public class BinMZKeyTest {
 

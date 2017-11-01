@@ -28,7 +28,7 @@ import java.io.IOException;
  * file and retrieve a cluster representation rather than ISpectrum.
  *
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 31/10/2017.
+ * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 31/10/2017.
  */
 public class MGFInputToClusterRunner {
 

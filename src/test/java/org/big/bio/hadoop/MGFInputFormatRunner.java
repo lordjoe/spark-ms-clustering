@@ -18,7 +18,7 @@ import java.io.IOException;
  * check the quality of the MGF and data. This can used for testing the correctness of MGF file.
  *
  * @author Rui Wang
- * @author ypriverol
+ * @author Yasset Perez-Riverol
  *
  */
 public class MGFInputFormatRunner {

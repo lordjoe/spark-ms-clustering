@@ -7,7 +7,7 @@ package org.big.bio.keys;
  * when two mass values are compare they are done using a Bin Size ather than the exacted mass. Bin is defined at he very beginning
  * of the algorithm.
  *
- * @author ypriverol
+ * @author Yasset Perez-Riverol
  *
  */
 public class BinMZKey implements IKeyable<BinMZKey> {

@@ -1,15 +1,12 @@
 package org.big.bio.utils;
 
-import org.apache.commons.configuration.ConfigurationFactory;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
-import org.big.bio.clustering.kmeans.SparkMLClusteringKMeans;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -24,7 +21,7 @@ import java.io.Serializable;
  *
  *           spark://<spark-master-host-name>:7077
  *
- * @author ypriverol
+ * @author Yasset Perez-Riverol
  *
  */
 public class SparkUtil {

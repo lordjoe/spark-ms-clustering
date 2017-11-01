@@ -29,7 +29,7 @@ import java.util.List;
  * Read Paper here <a href="http://www.nature.com/nmeth/journal/v13/n8/full/nmeth.3902.html">Griss J. and Perez-Riverol Y. </a>
  *
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 31/10/2017.
+ * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 31/10/2017.
  */
 public class MGFStringTupleToClusterTuple implements PairFlatMapFunction<Tuple2<Text, Text>, String, ICluster> {
 

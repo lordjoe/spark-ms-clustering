@@ -22,7 +22,7 @@ import java.io.IOException;
  * The FileInputFormat enable to read in well structured data block in Spark. The current MGFInputFormat
  * defines how to read mgf block files.
  *
- * @author ypriverol
+ * @author Yasset Perez-Riverol
 */
 
 public class MGFInputFormat extends FileInputFormat<Text, Text> {

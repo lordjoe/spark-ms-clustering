@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Convert Text MGF Structure to ISpectrum objects.
  *
- * @author ypriverol
+ * @author Yasset Perez-Riverol
  */
 public class MGFStringTupleToSpectrumTuple implements PairFlatMapFunction<Tuple2<Text, Text>, String, ISpectrum> {
 
