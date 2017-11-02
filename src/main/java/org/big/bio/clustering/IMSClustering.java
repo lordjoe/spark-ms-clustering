@@ -11,7 +11,8 @@ import org.apache.spark.api.java.JavaSparkContext;
  * <p>
  * ==Overview==
  * <p>
- * This class
+ * This interface provides the methods for all the clustering implementations. For example,
+ * it provides the methods to retrieve the Spark Context.
  * <p>
  * Created by Yasset Perez-Riverol (ypriverol@gmail.com) on 27/10/2017.
  */
@@ -22,5 +23,11 @@ public interface IMSClustering {
      * @return JavaSparkContext
      */
     JavaSparkContext context();
+
+    /**
+     * Returns the configuration parameters for the clustering method.
+     * @return
+     */
+    IMSConfiguration configuration();
 
 }

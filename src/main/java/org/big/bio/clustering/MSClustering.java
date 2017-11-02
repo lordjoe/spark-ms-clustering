@@ -88,5 +88,12 @@ public class MSClustering implements IMSClustering {
         formatter.printHelp(APPLICATION_NAME, getCLIParameters());
     }
 
-
+    /**
+     * Dummy method to retrieve the config
+     * @return
+     */
+    @Override
+    public IMSConfiguration configuration() {
+        return null;
+    }
 }

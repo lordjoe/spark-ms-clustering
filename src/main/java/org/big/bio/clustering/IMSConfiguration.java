@@ -1,6 +1,6 @@
 package org.big.bio.clustering;
 
-import org.apache.hadoop.conf.Configuration;
+import java.util.Properties;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -13,10 +13,12 @@ import org.apache.hadoop.conf.Configuration;
  * <p>
  * This class
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 01/11/2017.
+ * Created by ypriverol (ypriverol@gmail.com) on 02/11/2017.
  */
-public interface IMSClusterConfiguration {
-
-    Configuration getConfiguration();
-
+public interface IMSConfiguration {
+    /**
+     * Retrieve key-value pairs for all the Algorithm parameters.
+     * @return
+     */
+    Properties getProperties();
 }
