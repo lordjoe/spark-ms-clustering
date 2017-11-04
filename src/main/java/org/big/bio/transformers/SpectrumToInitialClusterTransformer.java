@@ -53,8 +53,6 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
 
     private static final double LOWEST_MZ = 0;
 
-    private double binWidth;
-
     private IWideBinner binner;
 
     public static final String WINDOW_SIZE_PROPERTY = "mapper.window_size";
@@ -84,7 +82,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
         ConfigurableProperties.configureAnalysisParameters(context.hadoopConfiguration());
 
         // Read the Bin from the configuration file.
-        binWidth = context.hadoopConfiguration().getFloat(WINDOW_SIZE_PROPERTY, DEFAULT_BIN_WIDTH);
+        double binWidth = context.hadoopConfiguration().getFloat(WINDOW_SIZE_PROPERTY, DEFAULT_BIN_WIDTH);
 
         binner = new SizedWideBinner(MZIntensityUtilities.HIGHEST_USABLE_MZ, binWidth, LOWEST_MZ, BIN_OVERLAP, OVERFLOW_BINS);
 

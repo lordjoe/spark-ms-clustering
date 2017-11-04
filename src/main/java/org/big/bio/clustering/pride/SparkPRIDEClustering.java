@@ -9,16 +9,10 @@ import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
 import org.big.bio.hadoop.MGFInputFormat;
 import org.big.bio.keys.BinMZKey;
-import org.big.bio.keys.MZKey;
 import org.big.bio.transformers.MGFStringToSpectrumTransformer;
 import org.big.bio.transformers.PrecursorBinnerTransformer;
 import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
-import org.big.bio.utils.IOUtilities;
-import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-
-import java.util.List;
 
 
 /**
