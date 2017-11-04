@@ -2,12 +2,23 @@ package org.big.bio.clustering.pride;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
+import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
+import org.big.bio.hadoop.MGFInputFormat;
+import org.big.bio.keys.BinMZKey;
+import org.big.bio.keys.MZKey;
+import org.big.bio.transformers.MGFStringToSpectrumTransformer;
+import org.big.bio.transformers.PrecursorBinnerTransformer;
+import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
 import org.big.bio.utils.IOUtilities;
 import org.big.bio.utils.SparkUtil;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+
+import java.util.List;
 
 
 /**
@@ -43,8 +54,23 @@ public class SparkPRIDEClustering extends MSClustering {
 
             String inputPath = cmd.getOptionValue("i");
 
-            JavaPairRDD<String, String> spectra = IOUtilities.parseMGFRDD(clusteringMethod.context(), inputPath);
-            SparkUtil.persistAndCount("Number of Spectra", spectra);
+            Class inputFormatClass = MGFInputFormat.class;
+            Class keyClass = String.class;
+            Class valueClass = String.class;
+
+            JavaPairRDD<Text, Text> spectraAsStrings = clusteringMethod.context().newAPIHadoopFile(inputPath, inputFormatClass, keyClass, valueClass, clusteringMethod.context().hadoopConfiguration());
+            LOGGER.info("Number of Spectra = " + spectraAsStrings.count());
+
+            JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
+                    .flatMapToPair(new MGFStringToSpectrumTransformer())
+                    .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
+                    .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
+
+            LOGGER.info("Number of Spectra = " + spectra.count());
+
+            JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = spectra.groupByKey();
+
+            LOGGER.info("Number Clusters by BinMz = " + clusters.count());
 
 
         } catch (ParseException e) {
