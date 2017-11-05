@@ -74,7 +74,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
      * This Constructor define the parameters to do the transformation from ISpectrum to Cluster.
      * It defines the bin With for all the spectra.
      *
-     * @param context
+     * @param context Java Spark Context
      */
     public SpectrumToInitialClusterTransformer(JavaSparkContext context){
 
@@ -96,8 +96,8 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
 
     /**
      * Transform the Spectrum into ICluster with the corresponding
-     * @param spectrumTuple
-     * @return
+     * @param spectrumTuple Spectrum Tuple.
+     * @return MZKey - ICluster Maps.
      * @throws Exception
      */
     @Override
@@ -161,8 +161,8 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
 
     /**
      * This method normalize an Spectrum
-     * @param filteredSpectrum
-     * @return
+     * @param filteredSpectrum spectrum to be Normalized
+     * @return Normalized Spectrum
      */
     private ISpectrum normaliseSpectrum(ISpectrum filteredSpectrum) {
         List<IPeak> normalizedPeaks = intensityNormalizer.normalizePeaks(filteredSpectrum.getPeaks());

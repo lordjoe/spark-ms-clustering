@@ -35,7 +35,7 @@ public class BinMZKey implements IKeyable<BinMZKey> {
     /**
      * MZ_RESOLUTION * peakMZ
      *
-     * @return
+     * @return Bin
      */
     public int getBin() {
         return bin;
@@ -44,7 +44,7 @@ public class BinMZKey implements IKeyable<BinMZKey> {
     /**
      * MZ_RESOLUTION * getPrecursorMZ
      *
-     * @return
+     * @return Precursor MZ
      */
     public double getPrecursorMZ() {
         return precursorMZ;
@@ -70,18 +70,18 @@ public class BinMZKey implements IKeyable<BinMZKey> {
     /**
      * sort by string works
      *
-     * @param o
-     * @return
+     * @param binMZKey
+     * @return compare int.
      */
     @Override
-    public int compareTo(final BinMZKey o) {
-        return toString().compareTo(o.toString());
+    public int compareTo(final BinMZKey binMZKey) {
+        return toString().compareTo(binMZKey.toString());
     }
 
     /**
      * here is an int that a partitioner would use
      *
-     * @return
+     * @return Partition Hash.
      */
     public int getPartitionHash() {
         return Math.abs(binKey.hashCode());

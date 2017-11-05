@@ -26,7 +26,7 @@ public interface IMSClustering {
 
     /**
      * Returns the configuration parameters for the clustering method.
-     * @return
+     * @return Configuration.
      */
     IMSConfiguration configuration();
 

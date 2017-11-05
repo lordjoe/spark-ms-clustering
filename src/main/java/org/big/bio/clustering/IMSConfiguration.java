@@ -18,7 +18,7 @@ import java.util.Properties;
 public interface IMSConfiguration {
     /**
      * Retrieve key-value pairs for all the Algorithm parameters.
-     * @return
+     * @return Properties.
      */
     Properties getProperties();
 }

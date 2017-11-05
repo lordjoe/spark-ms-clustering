@@ -8,7 +8,7 @@ public interface IPartitionable {
     /**
      * here is an int that a partitioner would use
      *
-     * @return
+     * @return Partitionable.
      */
     int getPartitionHash();
 
