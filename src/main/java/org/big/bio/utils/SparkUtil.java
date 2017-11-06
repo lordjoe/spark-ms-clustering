@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.FileSystem;
 import java.util.Properties;
 
 /**
@@ -47,7 +46,6 @@ public class SparkUtil {
      */
     public static JavaSparkContext createJavaSparkContext(String applicationName, String master){
       SparkConf conf = new SparkConf().setAppName(applicationName).setMaster(master);
-
       // This is need to re-write the corresponding partition.
       conf.set("spark.hadoop.validateOutputSpecs", "false");
       return new JavaSparkContext(conf);
@@ -132,9 +130,7 @@ public class SparkUtil {
      */
     public static void addProperties(Properties properties, Configuration conf){
         if(properties != null && conf != null){
-            properties.forEach( (key, value) -> {
-                conf.set(key.toString(), value.toString());
-            });
+            properties.forEach( (key, value) -> conf.set(key.toString(), value.toString()));
         }
     }
 

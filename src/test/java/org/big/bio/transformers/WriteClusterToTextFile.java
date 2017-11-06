@@ -1,9 +1,7 @@
 package org.big.bio.transformers;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -21,7 +19,6 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Properties;
 
 /**

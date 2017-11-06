@@ -1,6 +1,5 @@
 package org.big.bio.transformers;
 
-import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.utils.IOUtilities;
@@ -29,9 +28,7 @@ public class IterableClustersToStringTransformer implements PairFlatMapFunction<
     @Override
     public Iterator<Tuple2<String, String>> call(Tuple2<BinMZKey, Iterable<ICluster>> binMZKeyIterableTuple2) throws Exception {
         List<Tuple2<String, String>> re = new ArrayList<>();
-        binMZKeyIterableTuple2._2().forEach( cluster ->{
-            re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToCGFString(cluster)));
-        });
+        binMZKeyIterableTuple2._2().forEach( cluster -> re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToCGFString(cluster))));
         return re.iterator();
     }
 }
