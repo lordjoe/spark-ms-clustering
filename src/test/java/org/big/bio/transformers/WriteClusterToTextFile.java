@@ -18,8 +18,11 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -42,8 +45,14 @@ public class WriteClusterToTextFile {
     private JavaSparkContext sparkConf;
 
     @Before
-    public void setup(){
-        sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
+    public void setup() throws URISyntaxException, IOException {
+
+        File confFile = new File(WriteClusterToTextFile.class.getClassLoader().getResource("default-spark-local.properties").toURI());
+        sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]" );
+
+        Properties properties = SparkUtil.readProperties(sparkConf.hadoopConfiguration(), confFile);
+        SparkUtil.addProperties(properties, sparkConf.hadoopConfiguration());
+
         hdfsFileName = "./data/spectra/";
         hdfsOutputFile = "./hdfs/results.clustering";
     }
