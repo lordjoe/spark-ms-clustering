@@ -33,9 +33,6 @@ import java.util.List;
  */
 public class MGFStringToClusterTransformer implements PairFlatMapFunction<Tuple2<Text, Text>, String, ICluster> {
 
-    public MGFStringToClusterTransformer(){
-    }
-
     @Override
     public Iterator<Tuple2<String, ICluster>> call(final Tuple2<Text, Text> kv) throws Exception {
         List<Tuple2<String, ICluster>> ret = new ArrayList<>();
