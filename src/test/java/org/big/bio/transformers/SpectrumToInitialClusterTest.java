@@ -8,6 +8,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.hadoop.MGFInputFormat;
 import org.big.bio.keys.MZKey;
 import org.big.bio.utils.SparkUtil;
+import org.junit.Before;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -29,13 +31,20 @@ import java.io.IOException;
 public class SpectrumToInitialClusterTest {
 
     private static final Logger LOGGER = Logger.getLogger(SpectrumToInitialClusterTest.class);
+    private String hdfsFileName;
+    private JavaSparkContext sparkConf;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    @Before
+    public void setup(){
+        sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
+        hdfsFileName = "./data/spectra/";
 
-        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
+    }
+
+    @Test
+    public  void readInitialClusters() throws IOException, InterruptedException {
+
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
-
-        String hdfsFileName = "./data/spectra/";
 
         Class inputFormatClass = MGFInputFormat.class;
         Class keyClass = String.class;
@@ -48,7 +57,6 @@ public class SpectrumToInitialClusterTest {
 
         JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
         LOGGER.info("Number of Spectra = " + initialClusters.count());
-
 
     }
 

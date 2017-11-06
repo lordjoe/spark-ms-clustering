@@ -9,6 +9,8 @@ import org.big.bio.hadoop.MGFInputFormat;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.keys.MZKey;
 import org.big.bio.utils.SparkUtil;
+import org.junit.Before;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -30,13 +32,21 @@ import java.io.IOException;
 public class PrecursorBinnerTransformerTest {
 
     private static final Logger LOGGER = Logger.getLogger(SpectrumToInitialClusterTest.class);
+    private JavaSparkContext sparkConf;
+    private String hdfsFileName;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
 
-        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test Binner Cluster to Cluster", "local[*]");
+    @Before
+    public void setup(){
+        sparkConf = SparkUtil.createJavaSparkContext("Test Binner Cluster to Cluster", "local[*]");
+        hdfsFileName = "./data/spectra/";
+    }
+
+
+    @Test
+    public void binnerTransformer() throws IOException, InterruptedException {
+
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
-
-        String hdfsFileName = "./data/spectra/";
 
         Class inputFormatClass = MGFInputFormat.class;
         Class keyClass = String.class;

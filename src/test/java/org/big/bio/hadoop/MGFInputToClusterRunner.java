@@ -9,6 +9,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
 import org.big.bio.transformers.MGFStringToClusterTransformer;
 import org.big.bio.utils.SparkUtil;
+import org.junit.Before;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.io.IOException;
@@ -30,18 +32,25 @@ import java.io.IOException;
  */
 public class MGFInputToClusterRunner {
 
-    private static final Logger LOGGER = Logger.getLogger(MGFInputFormatRunner.class);
+    private static final Logger LOGGER = Logger.getLogger(MGFInputToClusterRunner.class);
+    private JavaSparkContext sparkConf;
+    private String hdfsFileName;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    @Before
+    public void setup(){
+        sparkConf = SparkUtil.createJavaSparkContext("Test MGF Read", "local[*]");
+        hdfsFileName = "./data/spectra/";
+    }
 
-        JavaSparkContext sparkConf = SparkUtil.createJavaSparkContext("Test MGF Read", "local[*]");
-        Configuration hadoopConf = sparkConf.hadoopConfiguration();
-
-        String hdfsFileName = "./data/spectra/";
+    @Test
+    public void readingClusterFile() throws IOException, InterruptedException {
 
         Class inputFormatClass = MGFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
+
+        Configuration hadoopConf = sparkConf.hadoopConfiguration();
+
 
         JavaPairRDD<Text, Text> spectraAsStrings = sparkConf.newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, hadoopConf);
 
@@ -56,5 +65,8 @@ public class MGFInputToClusterRunner {
         long pairs = spectraToScore.count();
         LOGGER.info("Read  " + pairs + " records");
     }
+
+
+
 
 }
