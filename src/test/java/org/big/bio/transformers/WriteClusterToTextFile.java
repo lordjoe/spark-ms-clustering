@@ -7,7 +7,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
-import org.big.bio.hadoop.MGFInputFormat;
+import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.keys.MZKey;
 import org.big.bio.utils.SparkUtil;
@@ -59,7 +59,7 @@ public class WriteClusterToTextFile {
 
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
 
-        Class inputFormatClass = MGFInputFormat.class;
+        Class inputFormatClass = MGFileFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
 
@@ -88,7 +88,7 @@ public class WriteClusterToTextFile {
 
         Configuration hadoopConf = sparkConf.hadoopConfiguration();
 
-        Class inputFormatClass = MGFInputFormat.class;
+        Class inputFormatClass = MGFileFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
 

@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
-import org.big.bio.hadoop.MGFInputFormat;
+import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.transformers.MGFStringToSpectrumTransformer;
 import org.big.bio.transformers.PrecursorBinnerTransformer;
@@ -48,7 +48,7 @@ public class SparkPRIDEClustering extends MSClustering {
 
             String inputPath = cmd.getOptionValue("i");
 
-            Class inputFormatClass = MGFInputFormat.class;
+            Class inputFormatClass = MGFileFInputFormat.class;
             Class keyClass = String.class;
             Class valueClass = String.class;
 

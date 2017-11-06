@@ -19,13 +19,13 @@ import org.apache.hadoop.util.LineReader;
 import java.io.IOException;
 
 /**
- * The FileInputFormat enable to read in well structured data block in Spark. The current MGFInputFormat
+ * The FileInputFormat enable to read in well structured data block in Spark. The current MGFileFInputFormat
  * defines how to read mgf block files.
  *
  * @author Yasset Perez-Riverol
 */
 
-public class MGFInputFormat extends FileInputFormat<Text, Text> {
+public class MGFileFInputFormat extends FileInputFormat<Text, Text> {
 
     @Override
     public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context) {

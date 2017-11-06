@@ -45,7 +45,7 @@ public class MGFInputToClusterRunner {
     @Test
     public void readingClusterFile() throws IOException, InterruptedException {
 
-        Class inputFormatClass = MGFInputFormat.class;
+        Class inputFormatClass = MGFileFInputFormat.class;
         Class keyClass = String.class;
         Class valueClass = String.class;
 
