@@ -3,6 +3,7 @@ package org.big.bio.transformers;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -44,7 +45,7 @@ public class WriteClusterToTextFile {
     public void setup(){
         sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]");
         hdfsFileName = "./data/spectra/";
-        hdfsOutputFile = "./hdfs/output/";
+        hdfsOutputFile = "./hdfs/results.clustering";
     }
 
     @Test
@@ -67,12 +68,41 @@ public class WriteClusterToTextFile {
 
         JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
 
-        JavaRDD<String> clusterString = clusters.map(new IterableClustersToStringTransformer());
+        JavaRDD<String> clusterString = clusters.flatMapToPair(new IterableClustersToStringTransformer()).values();
 
         clusterString.saveAsTextFile(hdfsOutputFile);
 
         LOGGER.info("Number of Binned Clusters = " + precursorClusters.count());
 
     }
+
+
+    @Test
+    public  void writingStructuredClusters() throws IOException, InterruptedException {
+
+        Configuration hadoopConf = sparkConf.hadoopConfiguration();
+
+        Class inputFormatClass = MGFInputFormat.class;
+        Class keyClass = String.class;
+        Class valueClass = String.class;
+
+        JavaPairRDD<Text, Text> spectraAsStrings = sparkConf.newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, hadoopConf);
+
+        JavaPairRDD<String, ISpectrum> spectra = spectraAsStrings.flatMapToPair(new MGFStringToSpectrumTransformer());
+        LOGGER.info("Number of Spectra = " + spectra.count());
+
+        JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
+        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
+
+        JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
+        clusters.flatMapToPair(new IterableClustersToStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
+
+
+        LOGGER.info("Number of Binned Clusters = " + precursorClusters.count());
+
+    }
+
+
+
 
 }

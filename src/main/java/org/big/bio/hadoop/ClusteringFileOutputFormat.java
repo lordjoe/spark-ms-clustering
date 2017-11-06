@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusteringFileOutputFormat extends FileOutputFormat<NullWritable, Text> {
+public class ClusteringFileOutputFormat extends TextOutputFormat<String, String> {
 
     private static final String CLUSTERING_FILE_EXTENSION = ".clustering";
 
@@ -35,7 +36,7 @@ public class ClusteringFileOutputFormat extends FileOutputFormat<NullWritable, T
 
 
     @Override
-    public RecordWriter<NullWritable, Text> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
+    public RecordWriter<String, String> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
         Configuration configuration = job.getConfiguration();
 
         Path outputFile = this.getDefaultWorkFile(job, CLUSTERING_FILE_EXTENSION);
@@ -45,7 +46,7 @@ public class ClusteringFileOutputFormat extends FileOutputFormat<NullWritable, T
     }
 
 
-    private static class ClusteringFileRecordWriter extends RecordWriter<NullWritable, Text> {
+    private static class ClusteringFileRecordWriter extends RecordWriter<String, String> {
 
         private final DataOutputStream out;
 
@@ -54,8 +55,8 @@ public class ClusteringFileOutputFormat extends FileOutputFormat<NullWritable, T
         }
 
         @Override
-        public void write(NullWritable key, Text value) throws IOException, InterruptedException {
-            out.write(value.getBytes(), 0, value.getLength());
+        public void write(String key, String value) throws IOException, InterruptedException {
+            out.write(value.getBytes());
         }
 
         @Override
