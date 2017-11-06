@@ -9,7 +9,7 @@
     <property>
         <name>clustering.file.prefix</name>
         <value>clusteringBin</value>
-        <description>prefix for the final output of each clustering file</description>
+        <description></description>
     </property>
 
     <property>
