@@ -5,7 +5,9 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDDLike;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.rdd.RDD;
 import org.apache.spark.storage.StorageLevel;
 
 import javax.annotation.Nonnull;
@@ -132,6 +134,15 @@ public class SparkUtil {
         if(properties != null && conf != null){
             properties.forEach( (key, value) -> conf.set(key.toString(), value.toString()));
         }
+    }
+
+    /**
+     * This method print for an RDD the count of entries.
+     * @param message Message that will be added as a prefix of the Logger Message
+     * @param rdd RDD with the corresponding count.
+     */
+    public static void collectLogCount(String message, JavaRDDLike rdd){
+        LOGGER.info(message + " = " + rdd.count());
     }
 
 
