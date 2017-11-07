@@ -102,6 +102,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // PRIDE Cluster consensus min of peaks.
     public static final String CONSENSUS_SPEC_MIN_PEAKS_PROPERTY      = "pride.cluster.consensus_min_peaks";
 
+    // PRIDE Cluster Major Peak Count first iteration.
+    public static final String MAJOR_PEAK_COUNT_PROPERTY              = "pride.cluster.major.peak.count";
+
 
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
@@ -127,7 +130,8 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
         properties.setProperty(ENABLE_COMPARISON_PEAK_FILTER_PROPERTY, Boolean.toString(DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));
         properties.setProperty(MAXIMUM_NUMBER_CLUSTERS_PROPERTY, String.valueOf(DEFAULT_MAXIMUM_NUMBER_OF_CLUSTERS));
-
+        properties.setProperty(INITIAL_HIGHEST_PEAK_FILTER_PROPERTY, String.valueOf(DEFAULT_INITIAL_HIGHEST_PEAK_FILTER));
+        properties.setProperty(MAJOR_PEAK_COUNT_PROPERTY, String.valueOf(DEFAULT_MAJOR_PEAK_COUNT));
 
         return properties;
     }
