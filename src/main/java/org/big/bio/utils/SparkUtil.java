@@ -171,6 +171,4 @@ public class SparkUtil {
         LOGGER.info(message + " = " + rdd.count());
     }
 
-
-
 }

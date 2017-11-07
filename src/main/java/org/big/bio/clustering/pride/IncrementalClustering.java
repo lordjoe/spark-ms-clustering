@@ -1,5 +1,6 @@
 package org.big.bio.clustering.pride;
 
+import org.apache.log4j.Logger;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.keys.BinMZKey;
 import scala.Tuple2;
@@ -31,6 +32,8 @@ import java.util.List;
  */
 public class IncrementalClustering implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, Iterable<ICluster>> {
 
+    private static final Logger LOGGER = Logger.getLogger(IncrementalClustering.class);
+
     ISimilarityChecker similarityChecker;
     double clusteringPrecision;
     IFunction<List<IPeak>, List<IPeak>> peakFilterFunction;
@@ -49,11 +52,16 @@ public class IncrementalClustering implements PairFlatMapFunction<Tuple2<BinMZKe
 
         List<Tuple2<BinMZKey, Iterable<ICluster>>> ret = new ArrayList<>();
         IIncrementalClusteringEngine engine = createIncrementalClusteringEngine();
+        final int[] count = {0};
 
         // Add spectra to the cluster engine.
         binMZKeyIterableTuple2._2().forEach( cluster -> {
             engine.addClusterIncremental(cluster);
+            count[0]++;
         });
+        LOGGER.info("BinMzKey = " + binMZKeyIterableTuple2._1().toString() + " | " + "Initial Clusters = " + count[0]);
+        LOGGER.info("BinMzKey = " + binMZKeyIterableTuple2._1().toString() + " | " + "Final Clusters =  "   + engine.getClusters().size());
+
 
         // Return the results.
         ret.add(new Tuple2<>(binMZKeyIterableTuple2._1(), engine.getClusters()));
