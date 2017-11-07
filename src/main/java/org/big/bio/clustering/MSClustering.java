@@ -4,6 +4,9 @@ import org.apache.commons.cli.*;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.utils.SparkUtil;
 
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
@@ -26,13 +29,22 @@ public class MSClustering implements IMSClustering {
     private final JavaSparkContext context;
 
     // Java Application Name for the Spark Application
-    public static String APPLICATION_NAME  = "SparkPRIDEClustering";
+    public static String APPLICATION_NAME  = "SparkClustering";
 
     /**
      * Default Spark Constructor, it runs in local[*]
      */
     public MSClustering(){
         context = SparkUtil.createJavaSparkContext(APPLICATION_NAME, "local[*]");
+    }
+
+    /**
+     * Default Constructor using the confFile and default parameters.
+     * @param confFile configure File
+     * @param defaultProperties default Properties
+     */
+    public MSClustering(String applicationName, String confFile, Properties defaultProperties) throws IOException {
+        context = SparkUtil.createJavaSparkContextWithFile(applicationName, confFile, defaultProperties);
     }
 
     /**

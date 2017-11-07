@@ -15,6 +15,8 @@ import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
+import java.io.IOException;
+
 
 /**
  * The SparkML Clustering KMeans used a Bisecting Kmeans approach as hierarchical clustering approached.
@@ -25,7 +27,14 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
  */
 public class SparkPRIDEClustering extends MSClustering {
 
+    // Logger
     private static final Logger LOGGER = Logger.getLogger(SparkPRIDEClustering.class);
+
+    // Default parameters for the algorithm
+    private static PRIDEClusterDefaultParameters defaultParameters = new PRIDEClusterDefaultParameters();
+
+    //Application Spark PRIDE Clustering
+    private static String APPLICATION_NAME = "SparkPRIDEClustering";
 
     public static void main(String[] args) {
 
@@ -44,7 +53,7 @@ public class SparkPRIDEClustering extends MSClustering {
                 LOGGER.info("The algorithm will run in local mode");
                 clusteringMethod = new SparkPRIDEClustering();
             }else{
-                clusteringMethod = new MSClustering(cmd.getOptionValue("c"));
+                clusteringMethod = new MSClustering(APPLICATION_NAME, cmd.getOptionValue("c"), defaultParameters.getProperties());
             }
 
             String inputPath = cmd.getOptionValue("i");
@@ -70,12 +79,8 @@ public class SparkPRIDEClustering extends MSClustering {
 
             // The first iteration of the algorithm cluster spectra only using the more relevant peaks.
 
-
-
-
-
-
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
+            MSClustering.printHelpCommands();
             e.printStackTrace();
         }
     }

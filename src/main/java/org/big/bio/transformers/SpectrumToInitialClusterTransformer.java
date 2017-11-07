@@ -3,7 +3,6 @@ package org.big.bio.transformers;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.clustering.pride.PRIDEClusterDefaultParameters;
-import org.big.bio.clustering.pride.ConfigurableProperties;
 import org.big.bio.keys.MZKey;
 import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
@@ -78,9 +77,6 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
      */
     public SpectrumToInitialClusterTransformer(JavaSparkContext context){
 
-        // read and customize configuration, default will be used if not provided
-        ConfigurableProperties.configureAnalysisParameters(context.hadoopConfiguration());
-
         // Read the Bin from the configuration file.
         double binWidth = context.hadoopConfiguration().getFloat(WINDOW_SIZE_PROPERTY, DEFAULT_BIN_WIDTH);
 
@@ -89,7 +85,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
         //context.getCounter("bin-width", String.valueOf(binWidth)).increment(1);
 
         // only keep the N (default = 150) highest peaks per spectrum
-        peakFilter = new HighestNPeakFunction(PRIDEClusterDefaultParameters.getInitialHighestPeakFilter());
+        peakFilter = new HighestNPeakFunction(PRIDEClusterDefaultParameters.DEFAULT_INITIAL_HIGHEST_PEAK_FILTER);
 
 
     }

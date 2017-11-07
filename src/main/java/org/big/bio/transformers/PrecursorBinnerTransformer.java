@@ -2,7 +2,6 @@ package org.big.bio.transformers;
 
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.big.bio.clustering.pride.ConfigurableProperties;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.keys.MZKey;
 import scala.Tuple2;
@@ -43,8 +42,6 @@ public class PrecursorBinnerTransformer implements PairFlatMapFunction<Tuple2<MZ
      * @param context JavaSparkContext.
      */
     public PrecursorBinnerTransformer(JavaSparkContext context) {
-        // read and customize configuration, default will be used if not provided
-        ConfigurableProperties.configureAnalysisParameters(context.hadoopConfiguration());
 
         float binWidth = context.hadoopConfiguration().getFloat(CURRENT_BINNER_WINDOW_SIZE, DEFAULT_BIN_WIDTH);
 

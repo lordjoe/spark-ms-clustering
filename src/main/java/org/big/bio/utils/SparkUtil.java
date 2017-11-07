@@ -69,6 +69,32 @@ public class SparkUtil {
        return sparkContext;
     }
 
+
+    /**
+     * The constructor create a context based in the application name, a Configuration file and the algorithm default properties.
+     * The confFile has priority over the properties, them each property from properties is added to the final properties.
+     * @param applicationName The application name
+     * @param confFile Configuration file with all parameters
+     * @param properties default properties.
+     * @return JavaSparkContext the Spark Context.
+     * @throws IOException
+     */
+    public static JavaSparkContext createJavaSparkContextWithFile(String applicationName, String confFile, Properties properties) throws IOException {
+        SparkConf conf = new SparkConf().setAppName(applicationName);
+        // This is need to re-write the corresponding partition.
+        JavaSparkContext sparkContext = new JavaSparkContext("local[*]", applicationName);
+
+        Properties confProperties = SparkUtil.readProperties(sparkContext.hadoopConfiguration(), new File(confFile));
+        properties.forEach( (key, value) ->{
+            if(!confProperties.contains(key)){
+                confProperties.setProperty(key.toString(), value.toString());
+            }
+        });
+        SparkUtil.addProperties(confProperties, sparkContext.hadoopConfiguration());
+        sparkContext.addFile(confFile);
+        return sparkContext;
+    }
+
     /**
      * This function allow to persist a JavaPAirRDD and print their count.
      *
