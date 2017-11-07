@@ -103,7 +103,6 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final String CONSENSUS_SPEC_MIN_PEAKS_PROPERTY      = "pride.cluster.consensus_min_peaks";
 
 
-
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
      * Spectra Cluster sequential algorithm https://github.com/spectra-cluster/spectra-cluster
@@ -127,6 +126,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
         properties.setProperty(SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
         properties.setProperty(ENABLE_COMPARISON_PEAK_FILTER_PROPERTY, Boolean.toString(DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));
+        properties.setProperty(MAXIMUM_NUMBER_CLUSTERS_PROPERTY, String.valueOf(DEFAULT_MAXIMUM_NUMBER_OF_CLUSTERS));
 
 
         return properties;
