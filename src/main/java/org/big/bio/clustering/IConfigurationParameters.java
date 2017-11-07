@@ -15,7 +15,7 @@ import java.util.Properties;
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 02/11/2017.
  */
-public interface IMSConfiguration {
+public interface IConfigurationParameters {
     /**
      * Retrieve key-value pairs for all the Algorithm parameters.
      * @return Properties.

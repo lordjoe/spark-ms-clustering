@@ -68,6 +68,10 @@ public class SparkPRIDEClustering extends MSClustering {
             JavaPairRDD<BinMZKey, Iterable<ICluster>> binnedPrecursors = spectra.groupByKey();
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
+            // The first iteration of the algorithm cluster spectra only using the more relevant peaks.
+
+
+
 
 
 

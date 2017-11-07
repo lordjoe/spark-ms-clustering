@@ -2,7 +2,6 @@ package org.big.bio.clustering;
 
 import org.apache.commons.cli.*;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.big.bio.clustering.IMSClustering;
 import org.big.bio.utils.SparkUtil;
 
 /**
@@ -93,7 +92,7 @@ public class MSClustering implements IMSClustering {
      * @return
      */
     @Override
-    public IMSConfiguration configuration() {
+    public IConfigurationParameters configuration() {
         return null;
     }
 }

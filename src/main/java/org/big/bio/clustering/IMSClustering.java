@@ -28,6 +28,6 @@ public interface IMSClustering {
      * Returns the configuration parameters for the clustering method.
      * @return Configuration.
      */
-    IMSConfiguration configuration();
+    IConfigurationParameters configuration();
 
 }
