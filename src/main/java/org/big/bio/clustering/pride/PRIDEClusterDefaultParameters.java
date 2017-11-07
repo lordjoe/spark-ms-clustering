@@ -86,21 +86,21 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final String MAJOR_PEAK_WINDOW_PROPERTY      = "pride.cluster.major.clustering.window";
 
     //Clustering minimum num,ber of comparisons by cluster.
-    public static final String CDF_MIN_NUMBER_COMPARISONS      = "pride.cluster.cdf.min_number_comparisons";
+    public static final String CDF_MIN_NUMBER_COMPARISONS_PROPERTY    = "pride.cluster.cdf.min_number_comparisons";
 
     // Todo: We need to define what is this.
-    public static final String ENABLE_COMPARISON_PEAK_FILTER   = "enable.comparison.clustering.filter";
+    public static final String ENABLE_COMPARISON_PEAK_FILTER_PROPERTY = "enable.comparison.clustering.filter";
 
     // Todo: We need to define what is this.
-    public static final String INITIAL_HIGHEST_PEAK_FILTER     = "pride.cluster.initial.highest.clustering.filter";
+    public static final String INITIAL_HIGHEST_PEAK_FILTER_PROPERTY   = "pride.cluster.initial.highest.clustering.filter";
 
-    public static final String MAXIMUM_NUMBER_CLUSTERS         = "pride.cluster.maximum_number_clusters";
+    public static final String MAXIMUM_NUMBER_CLUSTERS_PROPERTY       = "pride.cluster.maximum_number_clusters";
 
     // Check the similarity checker method.
-    public static final String SIMILARITY_CHECKER_PROPERTY     = "pride.cluster.similarity.checker";
+    public static final String SIMILARITY_CHECKER_PROPERTY            = "pride.cluster.similarity.checker";
 
     // PRIDE Cluster consensus min of peaks.
-    public static final String CONSENSUS_SPEC_MIN_PEAKS        = "pride.cluster.consensus_min_peaks";
+    public static final String CONSENSUS_SPEC_MIN_PEAKS_PROPERTY      = "pride.cluster.consensus_min_peaks";
 
 
 
@@ -116,16 +116,18 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         Properties properties = new Properties();
 
         // Set the default properties, most of these properties are defined in the sequential algorithm.
-        properties.setProperty(PRIDEClusterDefaultParameters.NUMBER_COMPARED_PEAKS_PROPERTY, String.valueOf(Defaults.getNumberComparedPeaks()));
-        properties.setProperty(PRIDEClusterDefaultParameters.FRAGMENT_ION_TOLERANCE_PROPERTY, NumberUtilities.formatDouble(Defaults.getFragmentIonTolerance(), 3));
-        properties.setProperty(PRIDEClusterDefaultParameters.SIMILARITY_THRESHOLD_PROPERTY, NumberUtilities.formatDouble(Defaults.getSimilarityThreshold(), 3));
-        properties.setProperty(PRIDEClusterDefaultParameters.RETAIN_THRESHOLD_PROPERTY, NumberUtilities.formatDouble(Defaults.getRetainThreshold(), 3));
-        properties.setProperty(PRIDEClusterDefaultParameters.MAJOR_PEAK_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_MAJOR_PEAK_MZ_WINDOW, 3));
-        properties.setProperty(PRIDEClusterDefaultParameters.SPECTRUM_MERGE_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_SPECTRUM_MERGE_WINDOW, 3));
-        properties.setProperty(PRIDEClusterDefaultParameters.CONSENSUS_SPEC_MIN_PEAKS, String.valueOf(Defaults.getDefaultConsensusMinPeaks()));
-        properties.setProperty(PRIDEClusterDefaultParameters.CDF_MIN_NUMBER_COMPARISONS, String.valueOf(Defaults.DEFAULT_MIN_NUMBER_COMPARISONS));
-        properties.setProperty(PRIDEClusterDefaultParameters.CONSENSUS_SPEC_MIN_PEAKS, String.valueOf(Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
-        properties.setProperty(PRIDEClusterDefaultParameters.SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
+        properties.setProperty(NUMBER_COMPARED_PEAKS_PROPERTY, String.valueOf(Defaults.getNumberComparedPeaks()));
+        properties.setProperty(FRAGMENT_ION_TOLERANCE_PROPERTY, NumberUtilities.formatDouble(Defaults.getFragmentIonTolerance(), 3));
+        properties.setProperty(SIMILARITY_THRESHOLD_PROPERTY, NumberUtilities.formatDouble(Defaults.getSimilarityThreshold(), 3));
+        properties.setProperty(RETAIN_THRESHOLD_PROPERTY, NumberUtilities.formatDouble(Defaults.getRetainThreshold(), 3));
+        properties.setProperty(MAJOR_PEAK_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_MAJOR_PEAK_MZ_WINDOW, 3));
+        properties.setProperty(SPECTRUM_MERGE_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_SPECTRUM_MERGE_WINDOW, 3));
+        properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.getDefaultConsensusMinPeaks()));
+        properties.setProperty(CDF_MIN_NUMBER_COMPARISONS_PROPERTY, String.valueOf(Defaults.DEFAULT_MIN_NUMBER_COMPARISONS));
+        properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
+        properties.setProperty(SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
+        properties.setProperty(ENABLE_COMPARISON_PEAK_FILTER_PROPERTY, Boolean.toString(DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));
+
 
         return properties;
     }
