@@ -33,7 +33,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final double DEFAULT_SPECTRUM_MERGE_WINDOW = 0.5;
 
     // the number of major peaks that would be consider in the first iteration of clustering
-    public static final double DEFAULT_MAJOR_PEAK_COUNT = 5;
+    public static final int DEFAULT_MAJOR_PEAK_COUNT = 5;
 
     // Enable the peak filter
     public static final boolean DEFAULT_ENABLE_COMPARISON_PEAK_FILTER = true;
@@ -112,10 +112,10 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final String MAJOR_PEAK_COUNT_PROPERTY              = "pride.cluster.major.peak.count";
 
     //PRIDE Cluster start threshold accuracy.
-    public static final String CLUSTER_START_THRESHOLD_PROPERTY = "pride.cluster.start.threshold";
+    public static final String CLUSTER_START_THRESHOLD_PROPERTY       = "pride.cluster.start.threshold";
 
     //PRIDE Cluster end threshold accuracy
-    public static final String CLUSTER_END_THRESHOLD_PROPERTY = "pride.cluster.end.thershold";
+    public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.thershold";
 
 
 
