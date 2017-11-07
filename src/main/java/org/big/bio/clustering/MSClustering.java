@@ -74,8 +74,10 @@ public class MSClustering implements IMSClustering {
         Options defaultOptions = new Options();
         Option optionFile = new Option("i", "input-path", true, "Input Path containing all the mass spectra");
         Option optionConf = new Option("c", "conf", true, "Configuration file for the spark application");
+        Option optionOutput = new Option("o", "output-path", true, "Output Path to write all the clusters");
         defaultOptions.addOption(optionFile);
         defaultOptions.addOption(optionConf);
+        defaultOptions.addOption(optionOutput);
         return defaultOptions;
     }
 

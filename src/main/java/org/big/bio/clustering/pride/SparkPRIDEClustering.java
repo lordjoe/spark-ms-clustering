@@ -5,10 +5,12 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
+import org.big.bio.transformers.IterableClustersToStringTransformer;
 import org.big.bio.transformers.MGFStringToSpectrumTransformer;
 import org.big.bio.transformers.PrecursorBinnerTransformer;
 import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
@@ -72,7 +74,7 @@ public class SparkPRIDEClustering extends MSClustering {
             // Parse the corresponding parameters of the algorithm
             CommandLine cmd = MSClustering.parseCommandLine(args, MSClustering.getCLIParameters());
 
-            if(!cmd.hasOption("i")){
+            if(!cmd.hasOption("i") || !cmd.hasOption("o")){
                 MSClustering.printHelpCommands();
                 System.exit( -1 );
             }
@@ -84,7 +86,11 @@ public class SparkPRIDEClustering extends MSClustering {
                 clusteringMethod = new SparkPRIDEClustering(cmd.getOptionValue("c"), defaultParameters.getProperties());
             }
 
+            // Input Path
             String inputPath = cmd.getOptionValue("i");
+
+            //Output Path
+            String hdfsOutputFile = cmd.getOptionValue("o");
 
             Class inputFormatClass = MGFileFInputFormat.class;
             Class keyClass = String.class;
@@ -114,6 +120,10 @@ public class SparkPRIDEClustering extends MSClustering {
 
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClustering(similarityChecker, originalPrecision, null, comparisonPredicate));
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+
+            JavaRDD<String> clusterString = binnedPrecursors.flatMapToPair(new IterableClustersToStringTransformer()).values();
+
+            clusterString.saveAsTextFile(hdfsOutputFile);
 
 
 
