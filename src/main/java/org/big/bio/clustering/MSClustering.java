@@ -48,7 +48,7 @@ public class MSClustering implements IMSClustering {
     }
 
     /**
-     * The contructor using the confile for the Spark Application
+     * The Constructor using the confile for the Spark Application
      * @param confFile
      */
     public MSClustering(String confFile){
@@ -106,5 +106,16 @@ public class MSClustering implements IMSClustering {
     @Override
     public IConfigurationParameters configuration() {
         return null;
+    }
+
+    /**
+     * This method return the current value for an specific parameter.
+     * for example
+     * @param key
+     * @return
+     */
+    @Override
+    public String getProperty(String key) {
+        return context.hadoopConfiguration().get(key);
     }
 }

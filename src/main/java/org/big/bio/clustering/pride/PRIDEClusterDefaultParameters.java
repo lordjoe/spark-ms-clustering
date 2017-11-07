@@ -62,6 +62,12 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // This is the default checker for the similarity CombinedFisherIntesityTest
     public static final String DEFAULT_SIMILARITY_CHECKER_CLASS = "uk.ac.ebi.pride.spectracluster.similarity.CombinedFisherIntensityTest";
 
+    // Start threshold of the PRIDE Cluster algorithm.
+    public static final Float DEFAULT_START_THRESHOLD = 0.999F;
+
+    // End threshold of the PRIDE Cluster algorithm.
+    public static final Float DEFAULT_END_THRESHOLD  = 0.99F;
+
 
     /** Label of each Default property of PRIDE cluster algorithm  **/
 
@@ -105,6 +111,13 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // PRIDE Cluster Major Peak Count first iteration.
     public static final String MAJOR_PEAK_COUNT_PROPERTY              = "pride.cluster.major.peak.count";
 
+    //PRIDE Cluster start threshold accuracy.
+    public static final String CLUSTER_START_THRESHOLD_PROPERTY = "pride.cluster.start.threshold";
+
+    //PRIDE Cluster end threshold accuracy
+    public static final String CLUSTER_END_THRESHOLD_PROPERTY = "pride.cluster.end.thershold";
+
+
 
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
@@ -132,6 +145,8 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(MAXIMUM_NUMBER_CLUSTERS_PROPERTY, String.valueOf(DEFAULT_MAXIMUM_NUMBER_OF_CLUSTERS));
         properties.setProperty(INITIAL_HIGHEST_PEAK_FILTER_PROPERTY, String.valueOf(DEFAULT_INITIAL_HIGHEST_PEAK_FILTER));
         properties.setProperty(MAJOR_PEAK_COUNT_PROPERTY, String.valueOf(DEFAULT_MAJOR_PEAK_COUNT));
+        properties.setProperty(CLUSTER_START_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_START_THRESHOLD));
+        properties.setProperty(CLUSTER_END_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_END_THRESHOLD));
 
         return properties;
     }

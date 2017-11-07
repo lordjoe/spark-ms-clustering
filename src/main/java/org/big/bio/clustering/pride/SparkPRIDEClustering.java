@@ -14,8 +14,11 @@ import org.big.bio.transformers.PrecursorBinnerTransformer;
 import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.ClusterShareMajorPeakPredicate;
 
 import java.io.IOException;
+import java.util.Properties;
 
 
 /**
@@ -36,12 +39,37 @@ public class SparkPRIDEClustering extends MSClustering {
     //Application Spark PRIDE Clustering
     private static String APPLICATION_NAME = "SparkPRIDEClustering";
 
+    /**
+     * SparkClustering algorithm created from conf file and default properties files.
+     * @param confFile Configuration file
+     * @param properties default properties.
+     * @throws IOException
+     */
+    public SparkPRIDEClustering(String confFile, Properties properties) throws IOException {
+        super(APPLICATION_NAME, confFile, properties);
+    }
+
+    public SparkPRIDEClustering() {
+        super(APPLICATION_NAME);
+    }
+
+    /**
+     * Main method for running cluster.
+     *
+     * parameters:
+     *  --conf: Configuration File with all paramters for the algorithm.
+     *  --input-path: Input path
+     *
+     * @param args arguments parameters for PRIDE Cluster algorithm
+     *
+     */
     public static void main(String[] args) {
 
+        // Clustering method.
         IMSClustering clusteringMethod;
 
         try {
-
+            // Parse the corresponding parameters of the algorithm
             CommandLine cmd = MSClustering.parseCommandLine(args, MSClustering.getCLIParameters());
 
             if(!cmd.hasOption("i")){
@@ -53,7 +81,7 @@ public class SparkPRIDEClustering extends MSClustering {
                 LOGGER.info("The algorithm will run in local mode");
                 clusteringMethod = new SparkPRIDEClustering();
             }else{
-                clusteringMethod = new MSClustering(APPLICATION_NAME, cmd.getOptionValue("c"), defaultParameters.getProperties());
+                clusteringMethod = new SparkPRIDEClustering(cmd.getOptionValue("c"), defaultParameters.getProperties());
             }
 
             String inputPath = cmd.getOptionValue("i");
@@ -77,11 +105,22 @@ public class SparkPRIDEClustering extends MSClustering {
             JavaPairRDD<BinMZKey, Iterable<ICluster>> binnedPrecursors = spectra.groupByKey();
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
-            // The first iteration of the algorithm cluster spectra only using the more relevant peaks.
+            // The first step is to create the Major comparison predicate.
+            ClusterShareMajorPeakPredicate comparisonPredicate = new ClusterShareMajorPeakPredicate(Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.MAJOR_PEAK_COUNT_PROPERTY)));
+
+            // Create the similarity Checker.
+            ISimilarityChecker similarityChecker = PRIDEClusterDefaultParameters.getSimilarityCheckerFromConfiguration(clusteringMethod.context().hadoopConfiguration());
+            double originalPrecision = Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY));
+
+            binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClustering(similarityChecker, originalPrecision, null, comparisonPredicate));
+            SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
         } catch (ParseException | IOException e) {
             MSClustering.printHelpCommands();
             e.printStackTrace();
         }
     }
+
+
+
 }

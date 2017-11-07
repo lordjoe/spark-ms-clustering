@@ -11,7 +11,9 @@ import java.util.Properties;
  * <p>
  * ==Overview==
  * <p>
- * This class
+ * This interface return Configuration Parameters for each algorithm, The parameters are
+ * store in key-value pairs.
+ *
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 02/11/2017.
  */

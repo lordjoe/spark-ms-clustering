@@ -30,4 +30,10 @@ public interface IMSClustering {
      */
     IConfigurationParameters configuration();
 
+    /**
+     * This method returns a parameter value from the Configuration
+     * @param key
+     * @return
+     */
+    String getProperty(String key);
 }
