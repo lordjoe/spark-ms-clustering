@@ -19,16 +19,16 @@ import java.util.List;
  * <p>
  * ==Overview==
  * <p>
- * This class Save an Iterable set of Clusters into an String for the Output into final result files.
+ * This class
  * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 06/11/2017.
+ * Created by ypriverol (ypriverol@gmail.com) on 08/11/2017.
  */
-public class IterableClustersToStringTransformer implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, String, String> {
+public class IterableClustersToJSONStringTransformer implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, String, String> {
 
     @Override
     public Iterator<Tuple2<String, String>> call(Tuple2<BinMZKey, Iterable<ICluster>> binMZKeyIterableTuple2) throws Exception {
         List<Tuple2<String, String>> re = new ArrayList<>();
-        binMZKeyIterableTuple2._2().forEach( cluster -> re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToCGFString(cluster))));
+        binMZKeyIterableTuple2._2().forEach( cluster -> re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToClusteringString(cluster))));
         return re.iterator();
     }
 }

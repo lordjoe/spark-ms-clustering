@@ -74,7 +74,7 @@ public class WriteClusterToTextFile {
 
         JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
 
-        JavaRDD<String> clusterString = clusters.flatMapToPair(new IterableClustersToStringTransformer()).values();
+        JavaRDD<String> clusterString = clusters.flatMapToPair(new IterableClustersToCGFStringTransformer()).values();
 
         clusterString.saveAsTextFile(hdfsOutputFile);
 
@@ -101,7 +101,7 @@ public class WriteClusterToTextFile {
         JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
 
         JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
-        clusters.flatMapToPair(new IterableClustersToStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
+        clusters.flatMapToPair(new IterableClustersToCGFStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
 
 
         LOGGER.info("Number of Binned Clusters = " + precursorClusters.count());

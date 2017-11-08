@@ -71,6 +71,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // End threshold of the PRIDE Cluster algorithm.
     public static final Float DEFAULT_END_THRESHOLD  = 0.99F;
 
+    // The default export file format is CDF, if this variable is set to false, them the data will be exported to JSON
+    public static final boolean DEFAULT_EXPORT_FILE_FORMAT_CDF = true;
+
 
     /** Label of each Default property of PRIDE cluster algorithm  **/
 
@@ -120,7 +123,8 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     //PRIDE Cluster end threshold accuracy
     public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.thershold";
 
-
+    //This define the type of format that will be used to export the data in cluster
+    public static final String CLUSTER_EXPORT_FORMAT_CDF_PROPERTY     = "pride.cluster.export.cdf.clustering";
 
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
@@ -150,6 +154,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(MAJOR_PEAK_COUNT_PROPERTY, String.valueOf(DEFAULT_MAJOR_PEAK_COUNT));
         properties.setProperty(CLUSTER_START_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_START_THRESHOLD));
         properties.setProperty(CLUSTER_END_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_END_THRESHOLD));
+        properties.setProperty(CLUSTER_EXPORT_FORMAT_CDF_PROPERTY, String.valueOf(DEFAULT_EXPORT_FILE_FORMAT_CDF));
 
         return properties;
     }

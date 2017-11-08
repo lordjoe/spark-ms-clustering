@@ -5,16 +5,12 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
-import org.big.bio.transformers.IterableClustersToStringTransformer;
-import org.big.bio.transformers.MGFStringToSpectrumTransformer;
-import org.big.bio.transformers.PrecursorBinnerTransformer;
-import org.big.bio.transformers.SpectrumToInitialClusterTransformer;
+import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
@@ -122,7 +118,15 @@ public class SparkPRIDEClustering extends MSClustering {
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClustering(similarityChecker, originalPrecision, null, comparisonPredicate));
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
-            binnedPrecursors.flatMapToPair(new IterableClustersToStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
+            // The export can be done in two different formats CGF or Clustering (JSON)
+            JavaPairRDD<String, String> finalStringClusters;
+            if(Boolean.parseBoolean(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_EXPORT_FORMAT_CDF_PROPERTY)))
+                finalStringClusters = binnedPrecursors.flatMapToPair(new IterableClustersToCGFStringTransformer());
+            else
+                finalStringClusters = binnedPrecursors.flatMapToPair(new IterableClustersToJSONStringTransformer());
+
+            // Final export of the results
+            finalStringClusters.saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
 
         } catch (ParseException | IOException e) {
             MSClustering.printHelpCommands();
