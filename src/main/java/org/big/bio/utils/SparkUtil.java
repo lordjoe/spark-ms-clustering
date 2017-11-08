@@ -86,7 +86,7 @@ public class SparkUtil {
 
         Properties confProperties = SparkUtil.readProperties(sparkContext.hadoopConfiguration(), new File(confFile));
         properties.forEach( (key, value) ->{
-            if(!confProperties.contains(key)){
+            if(confProperties.get(key) == null){
                 confProperties.setProperty(key.toString(), value.toString());
             }
         });

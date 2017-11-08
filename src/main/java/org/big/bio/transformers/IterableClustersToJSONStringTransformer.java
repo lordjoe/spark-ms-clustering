@@ -28,7 +28,7 @@ public class IterableClustersToJSONStringTransformer implements PairFlatMapFunct
     @Override
     public Iterator<Tuple2<String, String>> call(Tuple2<BinMZKey, Iterable<ICluster>> binMZKeyIterableTuple2) throws Exception {
         List<Tuple2<String, String>> re = new ArrayList<>();
-        binMZKeyIterableTuple2._2().forEach( cluster -> re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToClusteringString(cluster))));
+        binMZKeyIterableTuple2._2().forEach( cluster -> re.add(new Tuple2<>(cluster.getId(), IOUtilities.convertClusterToJSONClusteringString(cluster))));
         return re.iterator();
     }
 }

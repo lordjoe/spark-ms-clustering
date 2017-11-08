@@ -81,9 +81,9 @@ public final class IOUtilities {
      * convert a cluster to string for output
      *
      * @param cluster given cluster
-     * @return string   represents cluster in CGF format
+     * @return string   represents cluster in JSON format
      */
-    public static String convertClusterToClusteringString(ICluster cluster) {
+    public static String convertClusterToJSONClusteringString(ICluster cluster) {
         StringBuilder sb = new StringBuilder();
         DotClusterClusterAppender clusterAppender = DotClusterClusterAppender.INSTANCE;
         clusterAppender.appendCluster(sb, cluster);
