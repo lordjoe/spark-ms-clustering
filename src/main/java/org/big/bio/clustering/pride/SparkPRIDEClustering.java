@@ -8,6 +8,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
+import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.transformers.IterableClustersToStringTransformer;
@@ -121,11 +122,7 @@ public class SparkPRIDEClustering extends MSClustering {
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClustering(similarityChecker, originalPrecision, null, comparisonPredicate));
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
-            JavaRDD<String> clusterString = binnedPrecursors.flatMapToPair(new IterableClustersToStringTransformer()).values();
-
-            clusterString.saveAsTextFile(hdfsOutputFile);
-
-
+            binnedPrecursors.flatMapToPair(new IterableClustersToStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
 
         } catch (ParseException | IOException e) {
             MSClustering.printHelpCommands();

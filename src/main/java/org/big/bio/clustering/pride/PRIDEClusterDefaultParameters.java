@@ -41,6 +41,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // Number of highest intensity peaks that would be consider for the clustering.
     public static final int DEFAULT_INITIAL_HIGHEST_PEAK_FILTER = 150;
 
+    //Number of comparisons to be performed in the algorithm
+    public static final int DEFAULT_MIN_NUMBER_COMPARISONS  = 10000;
+
     /**
      * If this option is > 0, a new clustering engine is being
      * created if the total number of clusters is reached
@@ -138,7 +141,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(MAJOR_PEAK_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_MAJOR_PEAK_MZ_WINDOW, 3));
         properties.setProperty(SPECTRUM_MERGE_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_SPECTRUM_MERGE_WINDOW, 3));
         properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.getDefaultConsensusMinPeaks()));
-        properties.setProperty(CDF_MIN_NUMBER_COMPARISONS_PROPERTY, String.valueOf(Defaults.DEFAULT_MIN_NUMBER_COMPARISONS));
+        properties.setProperty(CDF_MIN_NUMBER_COMPARISONS_PROPERTY, String.valueOf(PRIDEClusterDefaultParameters.DEFAULT_MIN_NUMBER_COMPARISONS));
         properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
         properties.setProperty(SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
         properties.setProperty(ENABLE_COMPARISON_PEAK_FILTER_PROPERTY, Boolean.toString(DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));

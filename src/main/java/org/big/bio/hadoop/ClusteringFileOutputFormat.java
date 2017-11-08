@@ -16,6 +16,7 @@ import java.io.IOException;
  * Output clusters into .clustering file format
  *
  * @author Rui Wang
+ * @author Yasset Perez-Riverol
  * @version $Id$
  */
 public class ClusteringFileOutputFormat extends TextOutputFormat<String, String> {
@@ -25,7 +26,7 @@ public class ClusteringFileOutputFormat extends TextOutputFormat<String, String>
     @Override
     public Path getDefaultWorkFile(TaskAttemptContext context, String extension) throws IOException {
         Configuration configuration = context.getConfiguration();
-        String prefix = configuration.get("clustering.file.prefix", "");
+        String prefix = configuration.get("pride.cluster.clustering.file.prefix", "");
 
         FileOutputCommitter committer = (FileOutputCommitter)this.getOutputCommitter(context);
         return new Path(committer.getWorkPath(), getUniqueFile(context, prefix, extension));
