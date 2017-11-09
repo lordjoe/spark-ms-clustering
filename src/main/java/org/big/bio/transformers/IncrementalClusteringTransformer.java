@@ -1,4 +1,4 @@
-package org.big.bio.clustering.pride;
+package org.big.bio.transformers;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
@@ -30,16 +30,16 @@ import java.util.List;
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 07/11/2017.
  */
-public class IncrementalClustering implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, Iterable<ICluster>> {
+public class IncrementalClusteringTransformer implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, Iterable<ICluster>> {
 
-    private static final Logger LOGGER = Logger.getLogger(IncrementalClustering.class);
+    private static final Logger LOGGER = Logger.getLogger(IncrementalClusteringTransformer.class);
 
     ISimilarityChecker similarityChecker;
     double clusteringPrecision;
     IFunction<List<IPeak>, List<IPeak>> peakFilterFunction;
     IComparisonPredicate<ICluster> comparisonPredicate;
 
-    public IncrementalClustering(ISimilarityChecker similarityChecker, double clusteringPrecision, IFunction<List<IPeak>,
+    public IncrementalClusteringTransformer(ISimilarityChecker similarityChecker, double clusteringPrecision, IFunction<List<IPeak>,
             List<IPeak>> peakFilterFunction, IComparisonPredicate<ICluster> comparisonPredicate){
         this.similarityChecker = similarityChecker;
         this.clusteringPrecision = clusteringPrecision;

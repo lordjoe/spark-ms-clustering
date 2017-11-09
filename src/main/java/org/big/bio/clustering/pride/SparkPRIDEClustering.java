@@ -58,6 +58,7 @@ public class SparkPRIDEClustering extends MSClustering {
      * parameters:
      *  --conf: Configuration File with all paramters for the algorithm.
      *  --input-path: Input path
+     *  --output-path: Output Path
      *
      * @param args arguments parameters for PRIDE Cluster algorithm
      *
@@ -115,7 +116,7 @@ public class SparkPRIDEClustering extends MSClustering {
             ISimilarityChecker similarityChecker = PRIDEClusterDefaultParameters.getSimilarityCheckerFromConfiguration(clusteringMethod.context().hadoopConfiguration());
             double originalPrecision = Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY));
 
-            binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClustering(similarityChecker, originalPrecision, null, comparisonPredicate));
+            binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, originalPrecision, null, comparisonPredicate));
             SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
 
             // The export can be done in two different formats CGF or Clustering (JSON)

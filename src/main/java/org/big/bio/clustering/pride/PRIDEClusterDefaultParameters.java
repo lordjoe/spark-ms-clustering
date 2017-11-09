@@ -124,7 +124,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final String CLUSTER_START_THRESHOLD_PROPERTY       = "pride.cluster.start.threshold";
 
     //PRIDE Cluster end threshold accuracy
-    public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.thershold";
+    public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.threshold";
 
     //This define the type of format that will be used to export the data in cluster
     public static final String CLUSTER_EXPORT_FORMAT_CDF_PROPERTY     = "pride.cluster.export.cdf.clustering";
