@@ -1,13 +1,10 @@
 package org.big.bio.clustering.pride;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.clustering.IMSClustering;
-import org.big.bio.clustering.MSClustering;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
@@ -26,9 +23,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Properties;
-
-import static org.junit.Assert.*;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
