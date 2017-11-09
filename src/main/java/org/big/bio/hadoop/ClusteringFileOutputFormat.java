@@ -39,7 +39,7 @@ public class ClusteringFileOutputFormat extends TextOutputFormat<String, String>
 
         Path outputFile = this.getDefaultWorkFile(job, CLUSTERING_FILE_EXTENSION);
         FileSystem fs = outputFile.getFileSystem(configuration);
-        FSDataOutputStream fileOut = fs.create(outputFile, false);
+        FSDataOutputStream fileOut = fs.create(outputFile, true);
         return new ClusteringFileRecordWriter(fileOut);
     }
 
