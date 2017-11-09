@@ -76,9 +76,9 @@ public class SparkPRIDEClusteringTest {
                 .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
         SparkUtil.collectLogCount("Number of Binned Precursors" , spectra);
 
-            // Group the ICluster by BinMzKey.
+        // Group the ICluster by BinMzKey.
         JavaPairRDD<BinMZKey, Iterable<ICluster>> binnedPrecursors = spectra.groupByKey();
-        SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+        SparkUtil.collectLogCount("Number of Unique Binned Precursors", binnedPrecursors);
 
         // The first step is to create the Major comparison predicate.
         IComparisonPredicate<ICluster> comparisonPredicate = new ClusterShareMajorPeakPredicate(Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.MAJOR_PEAK_COUNT_PROPERTY)));
@@ -88,20 +88,26 @@ public class SparkPRIDEClusteringTest {
         double originalPrecision = Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY));
 
         binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, originalPrecision, null, comparisonPredicate));
-        SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+
+        //Number of Clusters after the first iteration
+        PRIDEClusterUtils.computeQCMetrics(binnedPrecursors);
+
 
         //Thresholds for the refinements of the results
         List<Float> thresholds = PRIDEClusterUtils.generateClusteringThresholds(Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY)),
                 Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_END_THRESHOLD_PROPERTY)), Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTERING_ROUNDS_PROPERTY)));
 
         // The first step is to create the Major comparison predicate.
-
         for(Float threshold: thresholds){
+
             comparisonPredicate = new IsKnownComparisonsPredicate();
+
             // Create the similarity Checker.
             similarityChecker = PRIDEClusterDefaultParameters.getSimilarityCheckerFromConfiguration(clusteringMethod.context().hadoopConfiguration());
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, threshold, null, comparisonPredicate));
-            SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+
+            // Cluster report for iteration
+            PRIDEClusterUtils.computeQCMetrics(binnedPrecursors);
         }
 
         // The export can be done in two different formats CGF or Clustering (JSON)

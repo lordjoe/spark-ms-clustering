@@ -1,5 +1,13 @@
 package org.big.bio.clustering.pride;
 
+import org.apache.log4j.Logger;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.FlatMapFunction;
+import org.big.bio.keys.BinMZKey;
+import org.big.bio.utils.SparkUtil;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +26,8 @@ import java.util.List;
  */
 public class PRIDEClusterUtils {
 
+    private static final Logger LOGGER = Logger.getLogger(PRIDEClusterUtils.class);
+
     /**
      * Helper function to create the List of clustering thresholds based on the initial starting threshold
      * (highest precision), the target threshold, and the number of clustering rounds to perform.
@@ -35,5 +45,22 @@ public class PRIDEClusterUtils {
         }
 
         return thresholds;
+    }
+
+    /**
+     * This function compute the QC Metrics for a JavaPairRDD. The metrics define how many clusters
+     * high quality are present in the current results .
+     *
+     * @param clusters Clusters.
+     */
+    public static void computeQCMetrics(JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
+
+        JavaRDD<ICluster>  totalCluster = clusters
+                .flatMapValues(cluster -> cluster)
+                .map(cluster -> cluster._2());
+
+        LOGGER.info("Total Number of Clusters = " + totalCluster.count());
+
+
     }
 }

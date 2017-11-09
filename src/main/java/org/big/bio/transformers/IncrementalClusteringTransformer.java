@@ -59,9 +59,6 @@ public class IncrementalClusteringTransformer implements PairFlatMapFunction<Tup
             engine.addClusterIncremental(cluster);
             count[0]++;
         });
-        LOGGER.info("BinMzKey = " + binMZKeyIterableTuple2._1().toString() + " | " + "Initial Clusters = " + count[0]);
-        LOGGER.info("BinMzKey = " + binMZKeyIterableTuple2._1().toString() + " | " + "Final Clusters =  "   + engine.getClusters().size());
-
 
         // Return the results.
         ret.add(new Tuple2<>(binMZKeyIterableTuple2._1(), engine.getClusters()));
