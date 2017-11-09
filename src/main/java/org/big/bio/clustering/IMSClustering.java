@@ -24,11 +24,6 @@ public interface IMSClustering {
      */
     JavaSparkContext context();
 
-    /**
-     * Returns the configuration parameters for the clustering method.
-     * @return Configuration.
-     */
-    IConfigurationParameters configuration();
 
     /**
      * This method returns a parameter value from the Configuration

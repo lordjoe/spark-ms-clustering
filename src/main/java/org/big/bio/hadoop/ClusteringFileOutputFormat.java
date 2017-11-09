@@ -22,7 +22,6 @@ import java.io.IOException;
  *
  * @author Rui Wang
  * @author Yasset Perez-Riverol
- * @version $Id$
  */
 public class ClusteringFileOutputFormat extends TextOutputFormat<String, String> {
 

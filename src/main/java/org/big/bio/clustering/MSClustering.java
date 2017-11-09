@@ -102,15 +102,6 @@ public class MSClustering implements IMSClustering {
     }
 
     /**
-     * Dummy method to retrieve the config
-     * @return  IConfigurationParameters
-     */
-    @Override
-    public IConfigurationParameters configuration() {
-        return null;
-    }
-
-    /**
      * This method return the current value for an specific parameter.
      * for example
      * @param key property key (name)
