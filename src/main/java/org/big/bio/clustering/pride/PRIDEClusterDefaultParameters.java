@@ -74,6 +74,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // The default export file format is CDF, if this variable is set to false, them the data will be exported to JSON
     public static final boolean DEFAULT_EXPORT_FILE_FORMAT_CDF = true;
 
+    // Number of rounds to perform the clustering
+    public static final int DEFAULT_ROUNDS_CLUSTERING = 4;
+
 
     /** Label of each Default property of PRIDE cluster algorithm  **/
 
@@ -126,6 +129,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     //This define the type of format that will be used to export the data in cluster
     public static final String CLUSTER_EXPORT_FORMAT_CDF_PROPERTY     = "pride.cluster.export.cdf.clustering";
 
+    // Number of rounds
+    public static final String CLUSTERING_ROUNDS_PROPERTY             = "pride.cluster.round.clustering";
+
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
      * Spectra Cluster sequential algorithm https://github.com/spectra-cluster/spectra-cluster
@@ -155,6 +161,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(CLUSTER_START_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_START_THRESHOLD));
         properties.setProperty(CLUSTER_END_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_END_THRESHOLD));
         properties.setProperty(CLUSTER_EXPORT_FORMAT_CDF_PROPERTY, String.valueOf(DEFAULT_EXPORT_FILE_FORMAT_CDF));
+        properties.setProperty(CLUSTERING_ROUNDS_PROPERTY, String.valueOf(DEFAULT_ROUNDS_CLUSTERING));
 
         return properties;
     }

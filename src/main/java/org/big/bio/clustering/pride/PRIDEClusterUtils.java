@@ -26,7 +26,7 @@ public class PRIDEClusterUtils {
      * @param clusteringRounds Number of round of clustering to perform.
      * @return A List of thresholds used as parameter for the clustering runs.
      */
-    public List<Float> generateClusteringThresholds(Float startThreshold, Float endThreshold, int clusteringRounds) {
+    public static List<Float> generateClusteringThresholds(Float startThreshold, Float endThreshold, int clusteringRounds) {
         List<Float> thresholds = new ArrayList<>(clusteringRounds);
         float stepSize = (startThreshold - endThreshold) / (clusteringRounds - 1);
 
