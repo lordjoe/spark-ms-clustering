@@ -42,7 +42,7 @@ public class SparkPRIDEClustering extends MSClustering {
      * SparkClustering algorithm created from conf file and default properties files.
      * @param confFile Configuration file
      * @param properties default properties.
-     * @throws IOException
+     * @throws IOException Error creating the Context or reading the properties.
      */
     public SparkPRIDEClustering(String confFile, Properties properties) throws IOException {
         super(APPLICATION_NAME, confFile, properties);

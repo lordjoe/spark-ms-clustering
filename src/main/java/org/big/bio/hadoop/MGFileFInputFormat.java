@@ -106,7 +106,7 @@ public class MGFileFInputFormat extends FileInputFormat<Text, Text> {
          * Get the Scan Key Value
          *
          * @return true if there is data
-         * @throws IOException
+         * @throws IOException  IO Exception if some problem happen during the reading
          */
         @Override
         public boolean nextKeyValue() throws IOException {

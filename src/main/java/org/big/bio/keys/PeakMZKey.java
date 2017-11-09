@@ -6,6 +6,7 @@ package org.big.bio.keys;
  *
  * @author Steve Lewis
  * @author Rui Wang
+ * @author Yasset Perez-Riverol
  * @version $Id$
  *
  */
@@ -33,8 +34,7 @@ public class PeakMZKey implements IKeyable<PeakMZKey> {
 
     /**
      * MZ_RESOLUTION * peakMZ
-     *
-     * @return
+     * @return peakMZ Value
      */
     public double getPeakMZ() {
         return peakMZ;
@@ -43,7 +43,7 @@ public class PeakMZKey implements IKeyable<PeakMZKey> {
     /**
      * MZ_RESOLUTION * getPrecursorMZ
      *
-     * @return
+     * @return precursorMZ Value
      */
     public double getPrecursorMZ() {
         return precursorMZ;
@@ -68,18 +68,20 @@ public class PeakMZKey implements IKeyable<PeakMZKey> {
     /**
      * sort by string works
      *
-     * @param o
-     * @return
+     * @param o PeakMzKey to compare
+     * @return int value result of the comparison
      */
     @Override
     public int compareTo(final PeakMZKey o) {
-        return toString().compareTo(o.toString());
+        if(o != null)
+            return toString().compareTo(o.toString());
+        return 1;
     }
 
     /**
      * here is an int that a partitioner would use
      *
-     * @return
+     * @return Partition for the corresponding peakMZ
      */
     public int getPartitionHash() {
         return Math.abs(peakMZKey.hashCode());

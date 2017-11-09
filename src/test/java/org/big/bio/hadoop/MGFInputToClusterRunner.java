@@ -58,7 +58,7 @@ public class MGFInputToClusterRunner {
 
         boolean forceShuffle = true;
         JavaRDD<ICluster> spectraToScore = spectra.values();
-        spectraToScore.coalesce(120, forceShuffle);
+        spectraToScore.coalesce(120, true);
 
         spectraToScore = spectraToScore.persist(StorageLevel.DISK_ONLY());
 

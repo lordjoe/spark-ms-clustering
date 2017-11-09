@@ -49,7 +49,7 @@ public class MSClustering implements IMSClustering {
 
     /**
      * The Constructor using the confile for the Spark Application
-     * @param confFile
+     * @param confFile Configuration File
      */
     public MSClustering(String confFile){
         context = SparkUtil.createJavaSparkContextWithFile(APPLICATION_NAME, confFile);
@@ -57,7 +57,7 @@ public class MSClustering implements IMSClustering {
 
     /**
      * The method to retrieve the JavaSpark Context for the algorithm.
-     * @return
+     * @return Return the Spark Context
      */
     @Override
     public JavaSparkContext context(){
@@ -85,8 +85,8 @@ public class MSClustering implements IMSClustering {
      * This function provides the mechanism to parse the commandline options .
      * @param args Tools commands
      * @param options options
-     * @return
-     * @throws ParseException
+     * @return The CommandLine with the options parsed
+     * @throws ParseException Error parsing the arguments
      */
     public static CommandLine parseCommandLine(String[] args, Options options) throws ParseException {
         CommandLineParser parser = new DefaultParser();
@@ -103,7 +103,7 @@ public class MSClustering implements IMSClustering {
 
     /**
      * Dummy method to retrieve the config
-     * @return
+     * @return  IConfigurationParameters
      */
     @Override
     public IConfigurationParameters configuration() {
@@ -113,8 +113,8 @@ public class MSClustering implements IMSClustering {
     /**
      * This method return the current value for an specific parameter.
      * for example
-     * @param key
-     * @return
+     * @param key property key (name)
+     * @return value of the property.
      */
     @Override
     public String getProperty(String key) {

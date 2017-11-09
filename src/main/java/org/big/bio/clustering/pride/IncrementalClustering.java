@@ -74,13 +74,12 @@ public class IncrementalClustering implements PairFlatMapFunction<Tuple2<BinMZKe
      * @return IIncrementalClusteringEngine cluster engine.
      */
     private IIncrementalClusteringEngine createIncrementalClusteringEngine() {
-        IIncrementalClusteringEngine clusteringEngine = new GreedyIncrementalClusteringEngine(
+        return new GreedyIncrementalClusteringEngine(
                 similarityChecker,
                 Defaults.getDefaultSpectrumComparator(),
                 Defaults.getDefaultPrecursorIonTolerance(),
                 clusteringPrecision,
                 peakFilterFunction,
                 comparisonPredicate);
-        return clusteringEngine;
     }
 }

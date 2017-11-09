@@ -94,7 +94,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
      * Transform the Spectrum into ICluster with the corresponding
      * @param spectrumTuple Spectrum Tuple.
      * @return MZKey - ICluster Maps.
-     * @throws Exception
+     * @throws Exception IO Error iterating the Spectrum file.
      */
     @Override
     public Iterator<Tuple2<MZKey, ICluster>> call(Tuple2<String, ISpectrum> spectrumTuple) throws Exception {
@@ -127,9 +127,6 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
             if (bins.length != 1) {
                 throw new InterruptedException("This implementation only works if now overlap is set during binning.");
             }
-
-//            // save the bin as a property for further use
-//            cluster.setProperty(HadoopClusterProperties.SPECTRUM_TO_CLUSTER_BIN, String.valueOf(bins[0]));
 
             // This is really important because, here is when the cluster ID Is generated. We can explored the
             // idea in the future to generate the ID based on the Spectrum Cluster Peak List.

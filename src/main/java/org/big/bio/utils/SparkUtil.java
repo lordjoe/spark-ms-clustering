@@ -7,7 +7,6 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDDLike;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.rdd.RDD;
 import org.apache.spark.storage.StorageLevel;
 
 import javax.annotation.Nonnull;
@@ -77,7 +76,7 @@ public class SparkUtil {
      * @param confFile Configuration file with all parameters
      * @param properties default properties.
      * @return JavaSparkContext the Spark Context.
-     * @throws IOException
+     * @throws IOException Error Reading the properties file.
      */
     public static JavaSparkContext createJavaSparkContextWithFile(String applicationName, String confFile, Properties properties) throws IOException {
         SparkConf conf = new SparkConf().setAppName(applicationName);
@@ -123,8 +122,8 @@ public class SparkUtil {
     /**
      * persist in the best way - saves remembering which storage level
      *
-     * @param inp
-     * @return
+     * @param inp JavaPairRDD
+     * @return return a persistant PairRDD
      */
     @Nonnull
     public static <K, V> JavaPairRDD<K, V> persist(@Nonnull final JavaPairRDD<K, V> inp,StorageLevel storageLevel) {
@@ -136,7 +135,7 @@ public class SparkUtil {
      * @param conf Hadoop Configuration.
      * @param files Configuration Files
      * @return Properties
-     * @throws IOException
+     * @throws IOException IOerror Reading the properties file.
      */
     public static Properties readProperties(Configuration conf, File... files) throws IOException {
 

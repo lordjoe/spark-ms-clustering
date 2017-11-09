@@ -48,7 +48,7 @@ public class MZKey implements IKeyable<MZKey> {
     /**
      * here is an int that a partitioner would use
      *
-     * @return
+     * @return Return Partition
      */
     public int getPartitionHash() {
         return (int) (getPrecursorMZ() * MZIntensityUtilities.MZ_RESOLUTION + 0.5);
@@ -58,11 +58,13 @@ public class MZKey implements IKeyable<MZKey> {
     /**
      * sort by string works
      *
-     * @param o
-     * @return
+     * @param  o the partition
+     * @return retun int value of the comparison
      */
     @Override
     public int compareTo(final MZKey o) {
-        return toString().compareTo(o.toString());
+        if(o != null)
+            return toString().compareTo(o.toString());
+        return 1;
     }
 }

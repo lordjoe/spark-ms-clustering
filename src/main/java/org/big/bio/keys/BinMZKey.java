@@ -70,12 +70,14 @@ public class BinMZKey implements IKeyable<BinMZKey> {
     /**
      * sort by string works
      *
-     * @param binMZKey
+     * @param binMZKey binMzKey is a binned MZ Precursor mass
      * @return compare int.
      */
     @Override
     public int compareTo(final BinMZKey binMZKey) {
-        return toString().compareTo(binMZKey.toString());
+        if(binMZKey != null)
+            return toString().compareTo(binMZKey.toString());
+        return 1;
     }
 
     /**

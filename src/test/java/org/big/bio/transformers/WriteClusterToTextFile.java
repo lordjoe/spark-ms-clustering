@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
@@ -44,7 +45,9 @@ public class WriteClusterToTextFile {
     @Before
     public void setup() throws URISyntaxException, IOException {
 
-        File confFile = new File(WriteClusterToTextFile.class.getClassLoader().getResource("default-spark-local.properties").toURI());
+        URI uri = WriteClusterToTextFile.class.getClassLoader().getResource("default-spark-local.properties").toURI();
+        File confFile = new File(uri);
+
         sparkConf = SparkUtil.createJavaSparkContext("Test Spectrum Transformation to Cluster", "local[*]" );
 
         Properties properties = SparkUtil.readProperties(sparkConf.hadoopConfiguration(), confFile);
