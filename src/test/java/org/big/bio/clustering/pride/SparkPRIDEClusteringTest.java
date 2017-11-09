@@ -115,7 +115,6 @@ public class SparkPRIDEClusteringTest {
         // Final export of the results
         finalStringClusters.saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);
 
-
     }
 
 }
