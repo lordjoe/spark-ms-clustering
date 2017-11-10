@@ -55,7 +55,7 @@ public class SparkPRIDEClusteringTest {
 
         clusteringMethod = new SparkPRIDEClustering(confFile.getAbsolutePath(), defaultParameters.getProperties());
         hdfsFileName = "./data/spectra/";
-        hdfsOutputFile = "./hdfs/results.clustering";
+        hdfsOutputFile = "./hdfs/clustering";
     }
 
     @Test

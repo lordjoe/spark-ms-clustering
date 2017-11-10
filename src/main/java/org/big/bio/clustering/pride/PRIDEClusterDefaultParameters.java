@@ -2,7 +2,7 @@ package org.big.bio.clustering.pride;
 
 
 import org.apache.hadoop.conf.Configuration;
-import org.big.bio.clustering.IConfigurationParameters;
+import org.big.bio.core.IConfigurationParameters;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;

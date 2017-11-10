@@ -1,4 +1,4 @@
-package org.big.bio.clustering;
+package org.big.bio.core;
 
 import java.util.Properties;
 
