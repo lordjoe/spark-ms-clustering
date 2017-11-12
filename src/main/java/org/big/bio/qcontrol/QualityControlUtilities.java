@@ -1,5 +1,7 @@
 package org.big.bio.qcontrol;
 
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
@@ -16,4 +18,14 @@ package org.big.bio.qcontrol;
 public class QualityControlUtilities {
 
 
+    /**
+     * This function return true if the cluster average ratio is over a certain value.
+     *
+     * @param iClusters Cluster
+     * @param v
+     * @return
+     */
+    public static Boolean avgRatio(Iterable<ICluster> iClusters, double v) {
+        return null;
+    }
 }

@@ -53,7 +53,7 @@ public class PRIDEClusterUtils {
      *
      * @param clusters Clusters.
      */
-    public static void computeQCMetrics(JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
+    public static void reportNumberOfClusters(JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
 
         JavaRDD<ICluster>  totalCluster = clusters
                 .flatMapValues(cluster -> cluster)

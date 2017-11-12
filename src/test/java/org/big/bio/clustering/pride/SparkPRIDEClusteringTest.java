@@ -1,13 +1,12 @@
 package org.big.bio.clustering.pride;
 
 import org.apache.hadoop.io.Text;
-import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
+import org.big.bio.qcontrol.QualityControlUtilities;
 import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
 import org.junit.Before;
@@ -39,7 +38,6 @@ import java.util.List;
  */
 public class SparkPRIDEClusteringTest {
 
-    private static final Logger LOGGER = Logger.getLogger(SparkPRIDEClusteringTest.class);
     private String hdfsFileName;
     private String hdfsOutputFile;
     IMSClustering clusteringMethod;
@@ -90,7 +88,7 @@ public class SparkPRIDEClusteringTest {
         binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, originalPrecision, null, comparisonPredicate));
 
         //Number of Clusters after the first iteration
-        PRIDEClusterUtils.computeQCMetrics(binnedPrecursors);
+        PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
 
 
         //Thresholds for the refinements of the results
@@ -107,8 +105,10 @@ public class SparkPRIDEClusteringTest {
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, threshold, null, comparisonPredicate));
 
             // Cluster report for iteration
-            PRIDEClusterUtils.computeQCMetrics(binnedPrecursors);
+            PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
         }
+
+        binnedPrecursors = binnedPrecursors.filter(cluster -> QualityControlUtilities.avgRatio(cluster._2(), 0.70))
 
         // The export can be done in two different formats CGF or Clustering (JSON)
         JavaPairRDD<String, String> finalStringClusters;
