@@ -19,9 +19,20 @@ import java.util.Properties;
  */
 public class QualityControlDefaultParameters implements IConfigurationParameters{
 
+    /** Quality Control Peptides */
+
+    //Number of identified spectra in the cluster.
+    static final int DEFAULT_NUMBER_OF_SPECTRA_IDENTIFIED = 3;
+
+    /** Properties for Quality Control */
+
+    // Number of identified spectra in a cluster.
+    static final String NUMBER_OF_SPECTRA_IDENTIFIED_PROPERTY = "pride.cluster.qc.identified.spectra";
 
     @Override
     public Properties getProperties() {
-        return null;
+        Properties properties = new Properties();
+        properties.setProperty(NUMBER_OF_SPECTRA_IDENTIFIED_PROPERTY, String.valueOf(DEFAULT_NUMBER_OF_SPECTRA_IDENTIFIED));
+        return properties;
     }
 }
