@@ -35,4 +35,19 @@ public class QualityControlUtilities {
         }
         return identified/total;
     }
+
+    /**
+     * Number of identified spectra in the cluster
+     * @param iCluster cluster
+     * @return number of identified spectra
+     */
+    public static int numberOfIdentifiedSpectra(ICluster iCluster){
+        int identified = 0;
+        for(ISpectrum spectrum: iCluster.getClusteredSpectra()){
+            if(spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY) != null)
+                identified++;
+        }
+        return identified;
+    }
+
 }

@@ -109,10 +109,19 @@ public class SparkPRIDEClusteringTest {
             PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
         }
 
+        // Ratio between identified spectra an unidentified > 0.7
         JavaRDD<ICluster> filteredClusters = binnedPrecursors
                 .flatMapValues(cluster -> cluster)
                 .map(cluster -> cluster._2())
                 .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
+
+        PRIDEClusterUtils.reportNumberOfClusters(filteredClusters);
+
+        // More than 3 identified spectra in the cluster
+        filteredClusters = binnedPrecursors
+                .flatMapValues(cluster -> cluster)
+                .map(cluster -> cluster._2())
+                .filter(cluster -> QualityControlUtilities.numberOfIdentifiedSpectra(cluster) >= 3);
 
         PRIDEClusterUtils.reportNumberOfClusters(filteredClusters);
 
