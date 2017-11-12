@@ -2,6 +2,7 @@ package org.big.bio.clustering.pride;
 
 import org.apache.hadoop.io.Text;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
@@ -108,7 +109,12 @@ public class SparkPRIDEClusteringTest {
             PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
         }
 
-        binnedPrecursors = binnedPrecursors.filter(cluster -> QualityControlUtilities.avgRatio(cluster._2(), 0.70))
+        JavaRDD<ICluster> filteredClusters = binnedPrecursors
+                .flatMapValues(cluster -> cluster)
+                .map(cluster -> cluster._2())
+                .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
+
+        PRIDEClusterUtils.reportNumberOfClusters(filteredClusters);
 
         // The export can be done in two different formats CGF or Clustering (JSON)
         JavaPairRDD<String, String> finalStringClusters;

@@ -54,13 +54,19 @@ public class PRIDEClusterUtils {
      * @param clusters Clusters.
      */
     public static void reportNumberOfClusters(JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
-
         JavaRDD<ICluster>  totalCluster = clusters
                 .flatMapValues(cluster -> cluster)
                 .map(cluster -> cluster._2());
-
         LOGGER.info("Total Number of Clusters = " + totalCluster.count());
+    }
 
+
+    /**
+     * Print the final number of clusters
+     * @param clusters final number of clusters
+     */
+    public static void reportNumberOfClusters(JavaRDD<ICluster> clusters) {
+        LOGGER.info("Total Number of Clusters = " + clusters.count());
 
     }
 }
