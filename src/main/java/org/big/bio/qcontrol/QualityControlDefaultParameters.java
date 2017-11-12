@@ -24,15 +24,22 @@ public class QualityControlDefaultParameters implements IConfigurationParameters
     //Number of identified spectra in the cluster.
     static final int DEFAULT_NUMBER_OF_SPECTRA_IDENTIFIED = 3;
 
+    //Average of identified ratio for good clusters
+    static final double DEFAULT_AVG_RATIO_IDENTIFIED_SPECTRA = 0.70;
+
     /** Properties for Quality Control */
 
     // Number of identified spectra in a cluster.
     static final String NUMBER_OF_SPECTRA_IDENTIFIED_PROPERTY = "pride.cluster.qc.identified.spectra";
 
+    // Avg identified ratio
+    static final String AVG_IDENTIFIED_RATIO_PROPERTY = "pride.cluster.qc.avg.ratio";
+
     @Override
     public Properties getProperties() {
         Properties properties = new Properties();
         properties.setProperty(NUMBER_OF_SPECTRA_IDENTIFIED_PROPERTY, String.valueOf(DEFAULT_NUMBER_OF_SPECTRA_IDENTIFIED));
+        properties.setProperty(AVG_IDENTIFIED_RATIO_PROPERTY, String.valueOf(DEFAULT_AVG_RATIO_IDENTIFIED_SPECTRA));
         return properties;
     }
 }
