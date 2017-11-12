@@ -52,13 +52,9 @@ public class IncrementalClusteringTransformer implements PairFlatMapFunction<Tup
 
         List<Tuple2<BinMZKey, Iterable<ICluster>>> ret = new ArrayList<>();
         IIncrementalClusteringEngine engine = createIncrementalClusteringEngine();
-        final int[] count = {0};
 
         // Add spectra to the cluster engine.
-        binMZKeyIterableTuple2._2().forEach( cluster -> {
-            engine.addClusterIncremental(cluster);
-            count[0]++;
-        });
+        binMZKeyIterableTuple2._2().forEach(engine::addClusterIncremental);
 
         // Return the results.
         ret.add(new Tuple2<>(binMZKeyIterableTuple2._1(), engine.getClusters()));
