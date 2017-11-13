@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
 import uk.ac.ebi.pride.spectracluster.util.predicate.IComparisonPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.ClusterShareMajorPeakPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.IsKnownComparisonsPredicate;
@@ -66,18 +67,18 @@ public class SparkPRIDEClusteringTest {
 
             // Read the corresponding Spectra from the File System.
         JavaPairRDD<Text, Text> spectraAsStrings = clusteringMethod.context().newAPIHadoopFile(hdfsFileName, inputFormatClass, keyClass, valueClass, clusteringMethod.context().hadoopConfiguration());
-        SparkUtil.collectLogCount("Number of Spectra", spectraAsStrings);
+        SparkUtil.collectLogCount("Number of Spectra To Cluster = ", spectraAsStrings);
 
         // Process the Spectra Files and convert them into BinMZKey Hash map. Each entry correspond to a "unique" precursor mass.
         JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
                 .flatMapToPair(new MGFStringToSpectrumTransformer())
                 .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
                 .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
-        SparkUtil.collectLogCount("Number of Binned Precursors" , spectra);
+        SparkUtil.collectLogCount("Number of Binned Precursors = " , spectra);
 
         // Group the ICluster by BinMzKey.
         JavaPairRDD<BinMZKey, Iterable<ICluster>> binnedPrecursors = spectra.groupByKey();
-        SparkUtil.collectLogCount("Number of Unique Binned Precursors", binnedPrecursors);
+        SparkUtil.collectLogCount("Number of Unique Binned Precursors = ", binnedPrecursors);
 
         // The first step is to create the Major comparison predicate.
         IComparisonPredicate<ICluster> comparisonPredicate = new ClusterShareMajorPeakPredicate(Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.MAJOR_PEAK_COUNT_PROPERTY)));
@@ -89,7 +90,7 @@ public class SparkPRIDEClusteringTest {
         binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, originalPrecision, null, comparisonPredicate));
 
         //Number of Clusters after the first iteration
-        PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
+        PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters after ClusterShareMajorPeakPredicate = ", binnedPrecursors);
 
 
         //Thresholds for the refinements of the results
@@ -106,7 +107,7 @@ public class SparkPRIDEClusteringTest {
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, threshold, null, comparisonPredicate));
 
             // Cluster report for iteration
-            PRIDEClusterUtils.reportNumberOfClusters(binnedPrecursors);
+            PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters after IncrementalClusteringTransformer , Thershold " + threshold + " = ", binnedPrecursors);
         }
 
         // Ratio between identified spectra an unidentified > 0.7
@@ -115,7 +116,7 @@ public class SparkPRIDEClusteringTest {
                 .map(cluster -> cluster._2())
                 .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
 
-        PRIDEClusterUtils.reportNumberOfClusters(filteredClusters);
+        PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with ratio > 0.7 = ", filteredClusters);
 
         // More than 3 identified spectra in the cluster
         filteredClusters = binnedPrecursors
@@ -123,7 +124,7 @@ public class SparkPRIDEClusteringTest {
                 .map(cluster -> cluster._2())
                 .filter(cluster -> QualityControlUtilities.numberOfIdentifiedSpectra(cluster) >= 3);
 
-        PRIDEClusterUtils.reportNumberOfClusters(filteredClusters);
+        PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with >= 3 peptides = ", filteredClusters);
 
         // The export can be done in two different formats CGF or Clustering (JSON)
         JavaPairRDD<String, String> finalStringClusters;

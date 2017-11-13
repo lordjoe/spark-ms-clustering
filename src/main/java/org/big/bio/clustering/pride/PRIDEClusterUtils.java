@@ -51,22 +51,25 @@ public class PRIDEClusterUtils {
      * This function compute the QC Metrics for a JavaPairRDD. The metrics define how many clusters
      * high quality are present in the current results .
      *
+     * @param message Message to print
      * @param clusters Clusters.
      */
-    public static void reportNumberOfClusters(JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
+    public static void reportNumberOfClusters(String message, JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
         JavaRDD<ICluster>  totalCluster = clusters
                 .flatMapValues(cluster -> cluster)
                 .map(cluster -> cluster._2());
-        LOGGER.info("Total Number of Clusters = " + totalCluster.count());
+        LOGGER.info(message + totalCluster.count());
     }
 
 
     /**
      * Print the final number of clusters
+     *
+     * @param message message to print
      * @param clusters final number of clusters
      */
-    public static void reportNumberOfClusters(JavaRDD<ICluster> clusters) {
-        LOGGER.info("Total Number of Clusters = " + clusters.count());
+    public static void reportNumberOfClusters(String message, JavaRDD<ICluster> clusters) {
+        LOGGER.info(message  + clusters.count());
 
     }
 }

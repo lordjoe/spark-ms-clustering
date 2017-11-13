@@ -167,7 +167,7 @@ public class SparkUtil {
      * @param rdd RDD with the corresponding count.
      */
     public static void collectLogCount(String message, JavaRDDLike rdd){
-        LOGGER.info(message + " = " + rdd.count());
+        LOGGER.info(message + rdd.count());
     }
 
 }

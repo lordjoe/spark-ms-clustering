@@ -56,18 +56,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
 
     public static final String WINDOW_SIZE_PROPERTY = "mapper.window_size";
 
-    private IFunction<List<IPeak>, List<IPeak>> peakFilter;
-
-    /**
-     * Reuse normalizer
-     */
-    private IIntensityNormalizer intensityNormalizer = Defaults.getDefaultIntensityNormalizer();
-    private IFunction<ISpectrum, ISpectrum> initialSpectrumFilter =  Functions.join(
-            new RemoveImpossiblyHighPeaksFunction(),
-            new RemovePrecursorPeaksFunction(Defaults.getFragmentIonTolerance()),
-            new RemoveIonContaminantsPeaksFunction(Defaults.getFragmentIonTolerance()),
-            new RemoveWindowPeaksFunction(150F, Float.MAX_VALUE));
-
+    private IFunction<ISpectrum, ISpectrum> initialFilters;
 
     /**
      * This Constructor define the parameters to do the transformation from ISpectrum to Cluster.
@@ -82,11 +71,13 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
 
         binner = new SizedWideBinner(MZIntensityUtilities.HIGHEST_USABLE_MZ, binWidth, LOWEST_MZ, BIN_OVERLAP, OVERFLOW_BINS);
 
-        //context.getCounter("bin-width", String.valueOf(binWidth)).increment(1);
+        // Init the filters for the file
+        initialFilters = PRIDEClusterDefaultParameters.INITIAL_SPECTRUM_FILTER;
 
-        // only keep the N (default = 150) highest peaks per spectrum
-        peakFilter = new HighestNPeakFunction(PRIDEClusterDefaultParameters.DEFAULT_INITIAL_HIGHEST_PEAK_FILTER);
-
+        // Add all the initial filters to the list.
+        for (IFunction<ISpectrum, ISpectrum> iSpectrumISpectrumIFunction : PRIDEClusterDefaultParameters.getConfigurableSpectraFilters(context.hadoopConfiguration())) {
+            initialFilters = Functions.join(initialFilters, iSpectrumISpectrumIFunction);
+        }
 
     }
 
@@ -106,19 +97,18 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
         List<Tuple2<MZKey, ICluster>> ret = new ArrayList<>();
 
         if (precursorMz < MZIntensityUtilities.HIGHEST_USABLE_MZ) {
-            // increment dalton bin counter
-            // context.getCounter("normal precursor", "spectra < " + String.valueOf(MZIntensityUtilities.HIGHEST_USABLE_MZ)).increment(1);
 
             // do initial filtering (ie. precursor removal, impossible high peaks, etc.)
-            ISpectrum filteredSpectrum = initialSpectrumFilter.apply(spectrum);
+            ISpectrum filteredSpectrum = initialFilters.apply(spectrum);
 
+            // Normalized Peaks
             ISpectrum normalisedSpectrum = normaliseSpectrum(filteredSpectrum);
 
-            // only retain the signal peaks (default = 150 highest peaks)
-            ISpectrum reducedSpectrum = new Spectrum(filteredSpectrum, peakFilter.apply(normalisedSpectrum.getPeaks()));
+            // Spectrum Filter Peaks
+            normalisedSpectrum = new Spectrum(filteredSpectrum, PRIDEClusterDefaultParameters.HIGHEST_N_PEAK_INTENSITY_FILTER.apply(normalisedSpectrum.getPeaks()));
 
             // generate a new cluster
-            ICluster cluster = ClusterUtilities.asCluster(reducedSpectrum);
+            ICluster cluster = ClusterUtilities.asCluster(normalisedSpectrum);
 
             // get the bin(s)
             int[] bins = binner.asBins(cluster.getPrecursorMz());
@@ -135,17 +125,6 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
             // output cluster
             MZKey mzKey = new MZKey(precursorMz);
 
-//            keyOutputText.set(mzKey.toString());
-//            //Spectrum to Cluster Annotation.
-//            valueOutputText.set(IOUtilities.convertClusterToCGFString(cluster));
-//            context.write(keyOutputText, valueOutputText);
-//        }
-//        else {
-//            // count the number of spectra with an impossibly high precursor
-//            context.getCounter("high precursor", "spectra > " +
-//                    String.valueOf(MZIntensityUtilities.HIGHEST_USABLE_MZ)).increment(1);
-//        }
-
             ret.add(new Tuple2<>(mzKey, cluster));
         }
         return ret.iterator();
@@ -158,7 +137,7 @@ public class SpectrumToInitialClusterTransformer implements PairFlatMapFunction<
      * @return Normalized Spectrum
      */
     private ISpectrum normaliseSpectrum(ISpectrum filteredSpectrum) {
-        List<IPeak> normalizedPeaks = intensityNormalizer.normalizePeaks(filteredSpectrum.getPeaks());
+        List<IPeak> normalizedPeaks = PRIDEClusterDefaultParameters.DEFAULT_INTENSITY_NORMALIZER.normalizePeaks(filteredSpectrum.getPeaks());
         return new Spectrum(filteredSpectrum, normalizedPeaks);
     }
 }

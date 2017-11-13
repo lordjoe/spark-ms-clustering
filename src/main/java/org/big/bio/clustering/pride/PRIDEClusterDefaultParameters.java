@@ -6,6 +6,7 @@ import org.big.bio.core.IConfigurationParameters;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
@@ -30,8 +31,6 @@ import java.util.Properties;
  * by the user in the configuration file.
  *
  *
- * @author Steve Lewis
- * @author Rui Wang
  * @author Yasset Perez-Riverol
  *
  */
@@ -223,21 +222,21 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
      * @param configuration Hadoop configuration
      * @return List of IFunction
      */
-    public static List<IFunction> getConfigurableSpectraFilters(Configuration configuration){
-        List<IFunction> filters = new ArrayList<>();
+    public static List<IFunction<ISpectrum, ISpectrum>> getConfigurableSpectraFilters(Configuration configuration){
+        List<IFunction<ISpectrum, ISpectrum>> filters = new ArrayList<>();
 
         /** Add all the filters at spectra level **/
 
         // Remove the immonium
-        if(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY)))
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY) == null || Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY)))
             filters.add(new RemoveIonContaminantsPeaksFunction(0.1F));
 
         // Remove the mz150 Windows
-        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY)))
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY) == null || Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY)))
             filters.add( new RemoveWindowPeaksFunction(150.0F, Float.MAX_VALUE));
 
         // Remove the mz200 Windows
-        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY)))
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY) == null || Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY)))
             filters.add( new RemoveWindowPeaksFunction(200.0F, Float.MAX_VALUE));
 
         return filters;
@@ -249,20 +248,22 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
      */
 
     // Remove the Impossible High Peaks and the Precursor Peak
-    public static final IFunction INITIAL_SPECTRUM_FILTER = Functions.join(new RemoveImpossiblyHighPeaksFunction(), new RemovePrecursorPeaksFunction(Defaults.getFragmentIonTolerance()));
+    public static final IFunction<ISpectrum,ISpectrum> INITIAL_SPECTRUM_FILTER = Functions.join(new RemoveImpossiblyHighPeaksFunction(), new RemovePrecursorPeaksFunction(Defaults.getFragmentIonTolerance()));
 
 
     // This filter is applied to all spectra when loaded from the file - after the initial spectrum filter.
-    public static final IFunction HIGHEST_N_PEAK_INTENSITY_FILTER = new HighestNPeakFunction(70);
+    public static final IFunction<List<IPeak>, List<IPeak>> HIGHEST_N_PEAK_INTENSITY_FILTER = new HighestNPeakFunction(70);
 
     /**
      * Return the default Intensity normalizer
      */
-    public static final IIntensityNormalizer DEFAULT_INTENTISTY_NORMALIZER = Defaults.getDefaultIntensityNormalizer();
+    public static final IIntensityNormalizer DEFAULT_INTENSITY_NORMALIZER = Defaults.getDefaultIntensityNormalizer();
 
     /**
      * The filter applied to every spectrum when performing the actual comparison. This
      * filter does not affect the spectra from which the consensus spectrum is build.
+     * Only if fast mode is available.
+     * Todo: Ask to Johannes the influence in the algorithm.
      */
     public static final IFunction<List<IPeak>, List<IPeak>> DEFAULT_COMPARISON_FILTER_FUNCTION = new FractionTICPeakFunction(0.5f, 20);
 
