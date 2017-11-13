@@ -14,6 +14,7 @@ import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
 import uk.ac.ebi.pride.spectracluster.util.predicate.IComparisonPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.ClusterShareMajorPeakPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.IsKnownComparisonsPredicate;
@@ -97,13 +98,15 @@ public class SparkPRIDEClustering extends MSClustering {
             Class keyClass = String.class;
             Class valueClass = String.class;
 
+            List<IFunction> filters = PRIDEClusterDefaultParameters.getConfigurableSpectraFilters(clusteringMethod.context().hadoopConfiguration());
+
             // Read the corresponding Spectra from the File System.
             JavaPairRDD<Text, Text> spectraAsStrings = clusteringMethod.context().newAPIHadoopFile(inputPath, inputFormatClass, keyClass, valueClass, clusteringMethod.context().hadoopConfiguration());
             SparkUtil.collectLogCount("Number of Spectra", spectraAsStrings);
 
             // Process the Spectra Files and convert them into BinMZKey Hash map. Each entry correspond to a "unique" precursor mass.
             JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
-                    .flatMapToPair(new MGFStringToSpectrumTransformer())
+                    .flatMapToPair(new MGFStringToSpectrumTransformer(filters))
                     .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
                     .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
             SparkUtil.collectLogCount("Number of Binned Precursors" , spectra);

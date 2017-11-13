@@ -26,13 +26,11 @@ import java.util.List;
  * <p>
  * ==Overview==
  * <p>
- * This class
+ * This class performs the actual clustering step on a JavaPairRDD.
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 07/11/2017.
  */
 public class IncrementalClusteringTransformer implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, Iterable<ICluster>> {
-
-    private static final Logger LOGGER = Logger.getLogger(IncrementalClusteringTransformer.class);
 
     ISimilarityChecker similarityChecker;
     double clusteringPrecision;

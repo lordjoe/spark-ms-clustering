@@ -3,13 +3,26 @@ package org.big.bio.clustering.pride;
 
 import org.apache.hadoop.conf.Configuration;
 import org.big.bio.core.IConfigurationParameters;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
 import uk.ac.ebi.pride.spectracluster.util.binner.IWideBinner;
 import uk.ac.ebi.pride.spectracluster.util.binner.SizedWideBinner;
+import uk.ac.ebi.pride.spectracluster.util.function.Functions;
+import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.peak.FractionTICPeakFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.peak.HighestNPeakFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemoveImpossiblyHighPeaksFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemoveIonContaminantsPeaksFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemovePrecursorPeaksFunction;
+import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemoveWindowPeaksFunction;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -77,6 +90,15 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // Number of rounds to perform the clustering
     public static final int DEFAULT_ROUNDS_CLUSTERING = 4;
 
+    // Filter immonium
+    public static final boolean DEFAULT_FILTER_SPECTRA_IMMONIUM = true ;
+
+    // Filter mz150 spectra
+    public static final boolean DEFAULT_FILTER_SPECTRA_MZ150 = true;
+
+    // Filter mz200 spectra
+    public static final boolean DEFAULT_FILTER_SPECTRA_MZ200 = true;
+
 
     /** Label of each Default property of PRIDE cluster algorithm  **/
 
@@ -132,6 +154,13 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // Number of rounds
     public static final String CLUSTERING_ROUNDS_PROPERTY             = "pride.cluster.round.clustering";
 
+    // Filter Spectra by immonium
+    public static final String CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY       = "pride.cluster.spectra.filter.immonium_ions";
+
+    //Filter Spectra MZ Windows
+    public static final String CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY = "pride.cluster.spectra.filer.mz_150";
+    public static final String CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY = "pride.cluster.spectra.filter.mz_200";
+
     /**
      * Get Default properties for PRIDE Cluster algorithm. Some of this properties are defined in
      * Spectra Cluster sequential algorithm https://github.com/spectra-cluster/spectra-cluster
@@ -162,11 +191,19 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(CLUSTER_END_THRESHOLD_PROPERTY, String.valueOf(DEFAULT_END_THRESHOLD));
         properties.setProperty(CLUSTER_EXPORT_FORMAT_CDF_PROPERTY, String.valueOf(DEFAULT_EXPORT_FILE_FORMAT_CDF));
         properties.setProperty(CLUSTERING_ROUNDS_PROPERTY, String.valueOf(DEFAULT_ROUNDS_CLUSTERING));
+        properties.setProperty(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_IMMONIUM));
+        properties.setProperty(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_MZ150));
+        properties.setProperty(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_MZ200));
 
         return properties;
     }
 
 
+    /**
+     * The similarity checker allow to determinate the similarity between to spectrum
+     * @param configuration Haddop configuration
+     * @return return the Similarity Checker class
+     */
     public static ISimilarityChecker getSimilarityCheckerFromConfiguration(Configuration configuration) {
         Class similarityCheckerClass = configuration.getClass(PRIDEClusterDefaultParameters.SIMILARITY_CHECKER_PROPERTY, Defaults.getDefaultSimilarityChecker().getClass(), ISimilarityChecker.class);
         ISimilarityChecker similarityChecker;
@@ -180,4 +217,53 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
 
         return similarityChecker;
     }
+
+    /**
+     * Get all the Spectra filters configured by the Users
+     * @param configuration Hadoop configuration
+     * @return List of IFunction
+     */
+    public static List<IFunction> getConfigurableSpectraFilters(Configuration configuration){
+        List<IFunction> filters = new ArrayList<>();
+
+        /** Add all the filters at spectra level **/
+
+        // Remove the immonium
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY)))
+            filters.add(new RemoveIonContaminantsPeaksFunction(0.1F));
+
+        // Remove the mz150 Windows
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY)))
+            filters.add( new RemoveWindowPeaksFunction(150.0F, Float.MAX_VALUE));
+
+        // Remove the mz200 Windows
+        if(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY) != null && Boolean.parseBoolean(configuration.get(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY)))
+            filters.add( new RemoveWindowPeaksFunction(200.0F, Float.MAX_VALUE));
+
+        return filters;
+
+    }
+
+    /** This filter is applied to all spectra as soon as they are loaded from file.
+     * These filters are not configurable, they are applied to all spectra loaded into the algorithm.
+     */
+
+    // Remove the Impossible High Peaks and the Precursor Peak
+    public static final IFunction INITIAL_SPECTRUM_FILTER = Functions.join(new RemoveImpossiblyHighPeaksFunction(), new RemovePrecursorPeaksFunction(Defaults.getFragmentIonTolerance()));
+
+
+    // This filter is applied to all spectra when loaded from the file - after the initial spectrum filter.
+    public static final IFunction HIGHEST_N_PEAK_INTENSITY_FILTER = new HighestNPeakFunction(70);
+
+    /**
+     * Return the default Intensity normalizer
+     */
+    public static final IIntensityNormalizer DEFAULT_INTENTISTY_NORMALIZER = Defaults.getDefaultIntensityNormalizer();
+
+    /**
+     * The filter applied to every spectrum when performing the actual comparison. This
+     * filter does not affect the spectra from which the consensus spectrum is build.
+     */
+    public static final IFunction<List<IPeak>, List<IPeak>> DEFAULT_COMPARISON_FILTER_FUNCTION = new FractionTICPeakFunction(0.5f, 20);
+
 }
