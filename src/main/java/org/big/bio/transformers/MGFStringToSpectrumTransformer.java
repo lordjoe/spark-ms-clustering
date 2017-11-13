@@ -26,6 +26,12 @@ public class MGFStringToSpectrumTransformer implements PairFlatMapFunction<Tuple
     public MGFStringToSpectrumTransformer() {
     }
 
+    /**
+     * Transform the Text from the file into an ISpectrum
+     * @param kv Tuple Text, eExt
+     * @return the key value pair where the key is the id of the spectrum and the value the ISpectrum object
+     * @throws Exception
+     */
     @Override
     public Iterator<Tuple2<String, ISpectrum>> call(final Tuple2<Text, Text> kv) throws Exception {
         List<Tuple2<String, ISpectrum>> ret = new ArrayList<>();
