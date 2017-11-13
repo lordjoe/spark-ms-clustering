@@ -5,11 +5,13 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
 import org.big.bio.clustering.IMSClustering;
 import org.big.bio.clustering.MSClustering;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
+import org.big.bio.qcontrol.QualityControlUtilities;
 import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
@@ -98,20 +100,19 @@ public class SparkPRIDEClustering extends MSClustering {
             Class keyClass = String.class;
             Class valueClass = String.class;
 
-            // Read the corresponding Spectra from the File System.
             JavaPairRDD<Text, Text> spectraAsStrings = clusteringMethod.context().newAPIHadoopFile(inputPath, inputFormatClass, keyClass, valueClass, clusteringMethod.context().hadoopConfiguration());
-            SparkUtil.collectLogCount("Number of Spectra", spectraAsStrings);
+            SparkUtil.collectLogCount("Number of Spectra To Cluster = ", spectraAsStrings);
 
             // Process the Spectra Files and convert them into BinMZKey Hash map. Each entry correspond to a "unique" precursor mass.
             JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
                     .flatMapToPair(new MGFStringToSpectrumTransformer())
                     .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
                     .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
-            SparkUtil.collectLogCount("Number of Binned Precursors" , spectra);
+            SparkUtil.collectLogCount("Number of Binned Precursors = " , spectra);
 
             // Group the ICluster by BinMzKey.
             JavaPairRDD<BinMZKey, Iterable<ICluster>> binnedPrecursors = spectra.groupByKey();
-            SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+            SparkUtil.collectLogCount("Number of Unique Binned Precursors = ", binnedPrecursors);
 
             // The first step is to create the Major comparison predicate.
             IComparisonPredicate<ICluster> comparisonPredicate = new ClusterShareMajorPeakPredicate(Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.MAJOR_PEAK_COUNT_PROPERTY)));
@@ -121,21 +122,43 @@ public class SparkPRIDEClustering extends MSClustering {
             double originalPrecision = Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY));
 
             binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, originalPrecision, null, comparisonPredicate));
-            SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+
+            //Number of Clusters after the first iteration
+            PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters after ClusterShareMajorPeakPredicate = ", binnedPrecursors);
+
 
             //Thresholds for the refinements of the results
             List<Float> thresholds = PRIDEClusterUtils.generateClusteringThresholds(Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY)),
                     Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_END_THRESHOLD_PROPERTY)), Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTERING_ROUNDS_PROPERTY)));
 
             // The first step is to create the Major comparison predicate.
-
             for(Float threshold: thresholds){
+
                 comparisonPredicate = new IsKnownComparisonsPredicate();
+
                 // Create the similarity Checker.
                 similarityChecker = PRIDEClusterDefaultParameters.getSimilarityCheckerFromConfiguration(clusteringMethod.context().hadoopConfiguration());
                 binnedPrecursors = binnedPrecursors.flatMapToPair(new IncrementalClusteringTransformer(similarityChecker, threshold, null, comparisonPredicate));
-                SparkUtil.collectLogCount("Number Clusters by BinMz", binnedPrecursors);
+
+                // Cluster report for iteration
+                PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters after IncrementalClusteringTransformer , Thershold " + threshold + " = ", binnedPrecursors);
             }
+
+            // Ratio between identified spectra an unidentified > 0.7
+            JavaRDD<ICluster> filteredClusters = binnedPrecursors
+                    .flatMapValues(cluster -> cluster)
+                    .map(cluster -> cluster._2())
+                    .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
+
+            PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with ratio > 0.7 = ", filteredClusters);
+
+            // More than 3 identified spectra in the cluster
+            filteredClusters = binnedPrecursors
+                    .flatMapValues(cluster -> cluster)
+                    .map(cluster -> cluster._2())
+                    .filter(cluster -> QualityControlUtilities.numberOfIdentifiedSpectra(cluster) >= 3);
+
+            PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with >= 3 peptides = ", filteredClusters);
 
             // The export can be done in two different formats CGF or Clustering (JSON)
             JavaPairRDD<String, String> finalStringClusters;
