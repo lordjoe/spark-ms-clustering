@@ -131,11 +131,11 @@ public class SparkPRIDEClustering extends MSClustering {
             List<Float> thresholds = PRIDEClusterUtils.generateClusteringThresholds(Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY)),
                     Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_END_THRESHOLD_PROPERTY)), Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTERING_ROUNDS_PROPERTY)));
 
-            JavaRDD<ICluster> finalCluster =  binnedPrecursors.flatMapValues(cluster -> cluster)
-                    .map(cluster -> cluster._2());
-
             // The first step is to create the Major comparison predicate.
             for(Float threshold: thresholds){
+
+                spectra = binnedPrecursors.flatMapToPair(new IterableClustersToBinner(clusteringMethod.context(), PRIDEClusterDefaultParameters.BINNER_WINDOW_PROPERTY));
+                binnedPrecursors = spectra.groupByKey();
 
                 comparisonPredicate = new IsKnownComparisonsPredicate();
 
