@@ -32,8 +32,11 @@ import java.util.List;
 public class IncrementalClusteringTransformer implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, Iterable<ICluster>> {
 
     ISimilarityChecker similarityChecker;
+
     double clusteringPrecision;
+
     IFunction<List<IPeak>, List<IPeak>> peakFilterFunction;
+
     IComparisonPredicate<ICluster> comparisonPredicate;
 
     public IncrementalClusteringTransformer(ISimilarityChecker similarityChecker, double clusteringPrecision, IFunction<List<IPeak>,

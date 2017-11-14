@@ -12,6 +12,7 @@ import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
 import org.junit.Before;
 import org.junit.Test;
+import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
@@ -100,9 +101,7 @@ public class SparkPRIDEClusteringTest {
         // The first step is to create the Major comparison predicate.
         for(Float threshold: thresholds){
 
-            spectra = binnedPrecursors.flatMapToPair(new IterableClustersToBinner(clusteringMethod.context(), PRIDEClusterDefaultParameters.BINNER_WINDOW_PROPERTY));
-            binnedPrecursors = spectra.groupByKey();
-
+            //Predicate.
             comparisonPredicate = new IsKnownComparisonsPredicate();
 
             // Create the similarity Checker.
@@ -113,21 +112,15 @@ public class SparkPRIDEClusteringTest {
             PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters after IncrementalClusteringTransformer , Thershold " + threshold + " = ", binnedPrecursors);
         }
 
-        // Ratio between identified spectra an unidentified > 0.7
-        JavaRDD<ICluster> filteredClusters = binnedPrecursors
+        // Final Number of Clusters
+        JavaRDD<ICluster> finalClusters = binnedPrecursors
                 .flatMapValues(cluster -> cluster)
-                .map(cluster -> cluster._2())
-                .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
+                .map(Tuple2::_2);
+        PRIDEClusterUtils.reportNumberOfClusters("Final Number of Clusters  = ", finalClusters);
 
-        PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with ratio > 0.7 = ", filteredClusters);
+        // Print the global Quality
+        PRIDEClusterUtils.reportNumber("Global cluster quality = ", QualityControlUtilities.clusteringGlobalQuality(finalClusters, 3));
 
-        // More than 3 identified spectra in the cluster
-        filteredClusters = binnedPrecursors
-                .flatMapValues(cluster -> cluster)
-                .map(cluster -> cluster._2())
-                .filter(cluster -> QualityControlUtilities.numberOfIdentifiedSpectra(cluster) >= 3);
-
-        PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with >= 3 peptides = ", filteredClusters);
 
         // The export can be done in two different formats CGF or Clustering (JSON)
         JavaPairRDD<String, String> finalStringClusters;

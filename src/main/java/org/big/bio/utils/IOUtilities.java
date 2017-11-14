@@ -99,7 +99,7 @@ public final class IOUtilities {
      * @param inputPath Folder that contains all the spectra files (mgf input)
      * @return Map with the BinMZKey corresponding to the precursor Mass and the List of Spectra.
      */
-    public static JavaPairRDD<String, String> parseMGFRDD(JavaSparkContext context, String inputPath) {
+    public static JavaPairRDD parseMGFRDD(JavaSparkContext context, String inputPath) {
 
         Class inputFormatClass = MGFileFInputFormat.class;
         Class keyClass         = String.class;

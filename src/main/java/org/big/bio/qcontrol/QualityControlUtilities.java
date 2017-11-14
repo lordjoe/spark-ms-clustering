@@ -1,5 +1,8 @@
 package org.big.bio.qcontrol;
 
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.Function2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.KnownProperties;
@@ -49,5 +52,32 @@ public class QualityControlUtilities {
         }
         return identified;
     }
+
+    /**
+     * Return the number of Spectra by Cluster
+     * @param cluster Cluster
+     * @return Number of spectra in the cluster.
+     */
+    public static int numberOfSpectra(ICluster cluster){
+        return cluster.getClusteredSpectraCount();
+    }
+
+
+    /**
+     * Clustering Global Quality is the ratio of spectra between Identified Clusters (clusters with identified spectra  >=3)
+     * and all spectra.
+     *
+     * @param clusters result clusters
+     * @param identifiedPeptideThershold number of identified spectra in a cluster to consider it identified
+     * @return ratio.
+     */
+    public static double clusteringGlobalQuality(JavaRDD<ICluster> clusters, int identifiedPeptideThershold ){
+        return (double)numberOfSpectra(clusters.filter(cluster -> numberOfIdentifiedSpectra(cluster) > identifiedPeptideThershold))/ (double)numberOfSpectra(clusters);
+    }
+
+    private static int numberOfSpectra(JavaRDD<ICluster> clusters) {
+        return clusters.map(cluster -> cluster.getClusteredSpectraCount()).reduce((acum , n) -> acum + n);
+    }
+
 
 }

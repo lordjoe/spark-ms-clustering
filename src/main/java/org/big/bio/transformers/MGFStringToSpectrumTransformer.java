@@ -5,7 +5,6 @@ import org.apache.spark.api.java.function.PairFlatMapFunction;
 import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;

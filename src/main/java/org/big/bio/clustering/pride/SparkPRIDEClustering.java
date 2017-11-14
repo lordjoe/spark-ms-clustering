@@ -14,9 +14,9 @@ import org.big.bio.keys.BinMZKey;
 import org.big.bio.qcontrol.QualityControlUtilities;
 import org.big.bio.transformers.*;
 import org.big.bio.utils.SparkUtil;
+import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.util.function.IFunction;
 import uk.ac.ebi.pride.spectracluster.util.predicate.IComparisonPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.ClusterShareMajorPeakPredicate;
 import uk.ac.ebi.pride.spectracluster.util.predicate.cluster_comparison.IsKnownComparisonsPredicate;
@@ -134,9 +134,6 @@ public class SparkPRIDEClustering extends MSClustering {
             // The first step is to create the Major comparison predicate.
             for(Float threshold: thresholds){
 
-                spectra = binnedPrecursors.flatMapToPair(new IterableClustersToBinner(clusteringMethod.context(), PRIDEClusterDefaultParameters.BINNER_WINDOW_PROPERTY));
-                binnedPrecursors = spectra.groupByKey();
-
                 comparisonPredicate = new IsKnownComparisonsPredicate();
 
                 // Create the similarity Checker.
@@ -150,7 +147,7 @@ public class SparkPRIDEClustering extends MSClustering {
             // Ratio between identified spectra an unidentified > 0.7
             JavaRDD<ICluster> filteredClusters = binnedPrecursors
                     .flatMapValues(cluster -> cluster)
-                    .map(cluster -> cluster._2())
+                    .map(Tuple2::_2)
                     .filter(cluster -> QualityControlUtilities.avgIdentifiedRatio(cluster) > 0.70);
 
             PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with ratio > 0.7 = ", filteredClusters);
@@ -158,7 +155,7 @@ public class SparkPRIDEClustering extends MSClustering {
             // More than 3 identified spectra in the cluster
             filteredClusters = binnedPrecursors
                     .flatMapValues(cluster -> cluster)
-                    .map(cluster -> cluster._2())
+                    .map(Tuple2::_2)
                     .filter(cluster -> QualityControlUtilities.numberOfIdentifiedSpectra(cluster) >= 3);
 
             PRIDEClusterUtils.reportNumberOfClusters("Number of Clusters with >= 3 peptides = ", filteredClusters);

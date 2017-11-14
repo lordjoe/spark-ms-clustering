@@ -3,9 +3,8 @@ package org.big.bio.clustering.pride;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.FlatMapFunction;
 import org.big.bio.keys.BinMZKey;
-import org.big.bio.utils.SparkUtil;
+import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class PRIDEClusterUtils {
     public static void reportNumberOfClusters(String message, JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters){
         JavaRDD<ICluster>  totalCluster = clusters
                 .flatMapValues(cluster -> cluster)
-                .map(cluster -> cluster._2());
+                .map(Tuple2::_2);
         LOGGER.info(message + totalCluster.count());
     }
 
@@ -71,5 +70,14 @@ public class PRIDEClusterUtils {
     public static void reportNumberOfClusters(String message, JavaRDD<ICluster> clusters) {
         LOGGER.info(message  + clusters.count());
 
+    }
+
+    /**
+     * Print a message and double in the LOGGER
+     * @param message Message
+     * @param value double value
+     */
+    public static void reportNumber(String message, double value) {
+        LOGGER.info(message + value);
     }
 }
