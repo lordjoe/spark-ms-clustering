@@ -101,6 +101,9 @@ public class SparkPRIDEClusteringTest {
         // The first step is to create the Major comparison predicate.
         for(Float threshold: thresholds){
 
+            spectra = binnedPrecursors.flatMapToPair(new IterableClustersToBinner(clusteringMethod.context(), PRIDEClusterDefaultParameters.BINNER_WINDOW_PROPERTY));
+            binnedPrecursors = spectra.groupByKey();
+
             //Predicate.
             comparisonPredicate = new IsKnownComparisonsPredicate();
 
