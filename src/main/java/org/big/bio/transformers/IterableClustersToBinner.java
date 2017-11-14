@@ -4,7 +4,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.clustering.pride.PRIDEClusterDefaultParameters;
 import org.big.bio.keys.BinMZKey;
-import org.big.bio.keys.MZKey;
 import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
@@ -24,21 +23,15 @@ import java.util.List;
  * <p>
  * ==Overview==
  * <p>
- * This class performed Binner in the Precursor Mass.
+ * This class
  * <p>
- * @author Yasset Perez-Riverol (ypriverol@gmail.com) on 01/11/2017.
+ * Created by ypriverol (ypriverol@gmail.com) on 13/11/2017.
  */
-
-public class PrecursorBinnerTransformer implements PairFlatMapFunction<Tuple2<MZKey, ICluster>, BinMZKey, ICluster> {
+public class IterableClustersToBinner implements PairFlatMapFunction<Tuple2<BinMZKey, Iterable<ICluster>>, BinMZKey, ICluster> {
 
     private IWideBinner binner;
 
-    /**
-     * This class Binner specific precursor mass for all clusters. Still not aggregation has been performed at this point.
-     *
-     * @param context JavaSparkContext.
-     */
-    public PrecursorBinnerTransformer(JavaSparkContext context, String binWidthName) {
+    public IterableClustersToBinner(JavaSparkContext context, String binWidthName) {
 
         float binWidth = context.hadoopConfiguration().getFloat(binWidthName, PRIDEClusterDefaultParameters.DEFAULT_BINNER_WIDTH);
 
@@ -48,32 +41,22 @@ public class PrecursorBinnerTransformer implements PairFlatMapFunction<Tuple2<MZ
         if (offsetBins) {
             binner = (IWideBinner) binner.offSetHalf();
         }
+
     }
 
     @Override
-    public Iterator<Tuple2<BinMZKey, ICluster>> call(Tuple2<MZKey, ICluster> tupleCluster) throws Exception {
-
+    public Iterator<Tuple2<BinMZKey, ICluster>> call(Tuple2<BinMZKey, Iterable<ICluster>> binMZKeyIterableTuple2) throws Exception {
         List<Tuple2<BinMZKey, ICluster>> ret = new ArrayList<>();
-        IWideBinner binner = getBinner();
-        ICluster cluster = tupleCluster._2();
-        float precursorMz = cluster.getPrecursorMz();
-        int[] bins = binner.asBins(precursorMz);
 
-        // must only be in one bin
-        if (bins.length > 1) {
-                throw new InterruptedException("Multiple bins found for " + String.valueOf(precursorMz));
-        } else if (bins.length != 0) {
-            BinMZKey binMZKey = new BinMZKey(bins[0], precursorMz);
-            ret.add(new Tuple2<>(binMZKey, cluster));
-        }
+        binMZKeyIterableTuple2._2().forEach( cluster -> {
+            float precursorMz = cluster.getPrecursorMz();
+            int[] bins = binner.asBins(precursorMz);
+            // must only be in one bin
+            if (bins.length != 0) {
+                BinMZKey binMZKey = new BinMZKey(bins[0], precursorMz);
+                ret.add(new Tuple2<>(binMZKey, cluster));
+            }
+        });
         return ret.iterator();
-    }
-
-    /**
-     * Return the current Binner for clustering the MZ Precursor mass
-     * @return IWideBinner
-     */
-    public IWideBinner getBinner() {
-        return binner;
     }
 }

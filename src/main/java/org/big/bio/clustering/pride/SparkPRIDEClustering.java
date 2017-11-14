@@ -107,7 +107,7 @@ public class SparkPRIDEClustering extends MSClustering {
             JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
                     .flatMapToPair(new MGFStringToSpectrumTransformer())
                     .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
-                    .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
+                    .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context(), PRIDEClusterDefaultParameters.INIT_CURRENT_BINNER_WINDOW_PROPERTY));
             SparkUtil.collectLogCount("Number of Binned Precursors = " , spectra);
 
             // Group the ICluster by BinMzKey.
@@ -130,6 +130,9 @@ public class SparkPRIDEClustering extends MSClustering {
             //Thresholds for the refinements of the results
             List<Float> thresholds = PRIDEClusterUtils.generateClusteringThresholds(Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_START_THRESHOLD_PROPERTY)),
                     Float.parseFloat(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTER_END_THRESHOLD_PROPERTY)), Integer.parseInt(clusteringMethod.getProperty(PRIDEClusterDefaultParameters.CLUSTERING_ROUNDS_PROPERTY)));
+
+            JavaRDD<ICluster> finalCluster =  binnedPrecursors.flatMapValues(cluster -> cluster)
+                    .map(cluster -> cluster._2());
 
             // The first step is to create the Major comparison predicate.
             for(Float threshold: thresholds){

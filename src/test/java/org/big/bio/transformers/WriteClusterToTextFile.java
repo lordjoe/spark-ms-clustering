@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.big.bio.clustering.pride.PRIDEClusterDefaultParameters;
 import org.big.bio.hadoop.ClusteringFileOutputFormat;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
@@ -73,7 +74,7 @@ public class WriteClusterToTextFile {
 
         JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
 
-        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
+        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf, PRIDEClusterDefaultParameters.INIT_CURRENT_BINNER_WINDOW_PROPERTY));
 
         JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
 
@@ -101,7 +102,7 @@ public class WriteClusterToTextFile {
         LOGGER.info("Number of Spectra = " + spectra.count());
 
         JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
-        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
+        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf, PRIDEClusterDefaultParameters.INIT_CURRENT_BINNER_WINDOW_PROPERTY));
 
         JavaPairRDD<BinMZKey, Iterable<ICluster>> clusters = precursorClusters.groupByKey();
         clusters.flatMapToPair(new IterableClustersToCGFStringTransformer()).saveAsNewAPIHadoopFile(hdfsOutputFile, String.class, String.class, ClusteringFileOutputFormat.class);

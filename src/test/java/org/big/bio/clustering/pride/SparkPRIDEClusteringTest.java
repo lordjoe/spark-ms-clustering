@@ -73,7 +73,7 @@ public class SparkPRIDEClusteringTest {
         JavaPairRDD<BinMZKey, ICluster> spectra = spectraAsStrings
                 .flatMapToPair(new MGFStringToSpectrumTransformer())
                 .flatMapToPair(new SpectrumToInitialClusterTransformer(clusteringMethod.context()))
-                .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context()));
+                .flatMapToPair(new PrecursorBinnerTransformer(clusteringMethod.context(), PRIDEClusterDefaultParameters.INIT_CURRENT_BINNER_WINDOW_PROPERTY));
         SparkUtil.collectLogCount("Number of Binned Precursors = " , spectra);
 
         // Group the ICluster by BinMzKey.
@@ -99,6 +99,9 @@ public class SparkPRIDEClusteringTest {
 
         // The first step is to create the Major comparison predicate.
         for(Float threshold: thresholds){
+
+            spectra = binnedPrecursors.flatMapToPair(new IterableClustersToBinner(clusteringMethod.context(), PRIDEClusterDefaultParameters.BINNER_WINDOW_PROPERTY));
+            binnedPrecursors = spectra.groupByKey();
 
             comparisonPredicate = new IsKnownComparisonsPredicate();
 

@@ -1,6 +1,5 @@
 package org.big.bio.transformers;
 
-import org.apache.log4j.Logger;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.big.bio.keys.BinMZKey;
 import scala.Tuple2;

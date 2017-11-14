@@ -98,9 +98,17 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     // Filter mz200 spectra
     public static final boolean DEFAULT_FILTER_SPECTRA_MZ200 = true;
 
+    public static final float DEFAULT_INIT_BINNER_WINDOW = 0.5F;
+
+    public static final float DEFAULT_BINNER_WIDTH = 4.0F;
+
+
 
     /** Label of each Default property of PRIDE cluster algorithm  **/
 
+    public static final String INIT_CURRENT_BINNER_WINDOW_PROPERTY = "pride.cluster.init.mapper.window.size";
+
+    public static final String BINNER_WINDOW_PROPERTY = "pride.cluster.mapper.window.size";
 
     // Number of Peaks to be compare on each Spectra comparison.
     public static final String NUMBER_COMPARED_PEAKS_PROPERTY  = "pride.cluster.number.compared.peaks";
@@ -193,6 +201,8 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(CLUSTERING_FILTER_SPECTRA_IMMONIUM_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_IMMONIUM));
         properties.setProperty(CLUSTERING_FILTER_SPECTRA_MZ150_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_MZ150));
         properties.setProperty(CLUSTERING_FILTER_SPECTRA_MZ200_PROPERTY, String.valueOf(DEFAULT_FILTER_SPECTRA_MZ200));
+        properties.setProperty(INIT_CURRENT_BINNER_WINDOW_PROPERTY, String.valueOf(DEFAULT_INIT_BINNER_WINDOW));
+        properties.setProperty(BINNER_WINDOW_PROPERTY, String.valueOf(DEFAULT_BINNER_WIDTH));
 
         return properties;
     }

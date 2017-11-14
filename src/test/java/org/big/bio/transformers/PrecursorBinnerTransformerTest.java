@@ -5,6 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.big.bio.clustering.pride.PRIDEClusterDefaultParameters;
 import org.big.bio.hadoop.MGFileFInputFormat;
 import org.big.bio.keys.BinMZKey;
 import org.big.bio.keys.MZKey;
@@ -59,7 +60,7 @@ public class PrecursorBinnerTransformerTest {
 
         JavaPairRDD<MZKey, ICluster> initialClusters =  spectra.flatMapToPair(new SpectrumToInitialClusterTransformer(sparkConf));
 
-        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf));
+        JavaPairRDD<BinMZKey, ICluster> precursorClusters =  initialClusters.flatMapToPair(new PrecursorBinnerTransformer(sparkConf, PRIDEClusterDefaultParameters.INIT_CURRENT_BINNER_WINDOW_PROPERTY));
 
         LOGGER.info("Number of Binned Clusters = " + precursorClusters.count());
 
