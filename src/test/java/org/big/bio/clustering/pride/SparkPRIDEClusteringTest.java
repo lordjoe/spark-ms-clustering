@@ -121,6 +121,9 @@ public class SparkPRIDEClusteringTest {
         // Print the global Quality
         PRIDEClusterUtils.reportNumber("Global cluster quality = ", QualityControlUtilities.clusteringGlobalQuality(finalClusters, 3));
 
+        // Print the global Accuracy
+        PRIDEClusterUtils.reportNumber("Global cluster Accuracy = ", QualityControlUtilities.clusteringGlobalAccuracy(finalClusters, 3));
+
 
         // The export can be done in two different formats CGF or Clustering (JSON)
         JavaPairRDD<String, String> finalStringClusters;

@@ -2,10 +2,15 @@ package org.big.bio.qcontrol;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.jvnet.hk2.internal.Collector;
+import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.KnownProperties;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -75,9 +80,42 @@ public class QualityControlUtilities {
         return (double)numberOfSpectra(clusters.filter(cluster -> numberOfIdentifiedSpectra(cluster) > identifiedPeptideThershold))/ (double)numberOfSpectra(clusters);
     }
 
+    /**
+     * Compute the number of Spectra for a JavaRDD of ICluster
+     * @param clusters JavaRDD<{@link ICluster}>
+     * @return Number of Spectra
+     */
     private static int numberOfSpectra(JavaRDD<ICluster> clusters) {
-        return clusters.map(cluster -> cluster.getClusteredSpectraCount()).reduce((acum , n) -> acum + n);
+        return clusters.map(ICluster::getClusteredSpectraCount).reduce((acum , n) -> acum + n);
     }
+
+    /**
+     * This compute the clustering accuracy for all the clusters in the results
+     * @param clusters JavaRDD<{@link ICluster} clusters
+     * @param identifiedPeptideThreshold number of identified peptides to classified a cluster as identifed.
+     * @return accuracy
+     */
+    public static double clusteringGlobalAccuracy(JavaRDD<ICluster> clusters, int identifiedPeptideThreshold){
+        JavaRDD<ICluster> identifiedClusters = clusters.filter(cluster -> numberOfIdentifiedSpectra(cluster) > identifiedPeptideThreshold);
+        JavaPairRDD<ICluster, Tuple2<Long, Long>> peptides = identifiedClusters
+                .flatMapToPair((PairFlatMapFunction<ICluster, ICluster, Tuple2<Long, Long>>) iCluster -> {
+            List<Tuple2<ICluster, Tuple2<Long, Long>>> ret = new ArrayList<>();
+            Map<String, Long> peptideCount = iCluster.getClusteredSpectra().parallelStream()
+                    .filter(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY) != null)
+                    .collect(Collectors.groupingBy(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY), Collectors.counting()));
+            peptideCount = peptideCount.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+            Long rightSpectra = peptideCount.entrySet().iterator().next().getValue();
+            ret.add(new Tuple2(iCluster, new Tuple2<>(rightSpectra, peptideCount.entrySet().parallelStream().map(Map.Entry::getValue).reduce((sum, n)->sum+n).get() - rightSpectra)));
+            return ret.iterator();
+        });
+
+
+
+        return peptides.count();
+    }
+
 
 
 }
