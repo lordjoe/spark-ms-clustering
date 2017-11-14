@@ -3,7 +3,6 @@ package org.big.bio.qcontrol;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.jvnet.hk2.internal.Collector;
 import scala.Tuple2;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -99,21 +98,31 @@ public class QualityControlUtilities {
         JavaRDD<ICluster> identifiedClusters = clusters.filter(cluster -> numberOfIdentifiedSpectra(cluster) > identifiedPeptideThreshold);
         JavaPairRDD<ICluster, Tuple2<Long, Long>> peptides = identifiedClusters
                 .flatMapToPair((PairFlatMapFunction<ICluster, ICluster, Tuple2<Long, Long>>) iCluster -> {
-            List<Tuple2<ICluster, Tuple2<Long, Long>>> ret = new ArrayList<>();
-            Map<String, Long> peptideCount = iCluster.getClusteredSpectra().parallelStream()
-                    .filter(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY) != null)
-                    .collect(Collectors.groupingBy(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY), Collectors.counting()));
-            peptideCount = peptideCount.entrySet().stream()
-                    .sorted(Map.Entry.comparingByValue())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            Long rightSpectra = peptideCount.entrySet().iterator().next().getValue();
-            ret.add(new Tuple2(iCluster, new Tuple2<>(rightSpectra, peptideCount.entrySet().parallelStream().map(Map.Entry::getValue).reduce((sum, n)->sum+n).get() - rightSpectra)));
+                        List<Tuple2<ICluster, Tuple2<Long, Long>>> ret = new ArrayList<>();
+                        Map<String, Long> peptideCount = iCluster
+                                .getClusteredSpectra()
+                                .parallelStream()
+                                .filter(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY) != null)
+                                .collect(Collectors
+                                        .groupingBy(spectrum -> spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY), Collectors.counting()));
+                        peptideCount = peptideCount.entrySet()
+                                .stream()
+                                .sorted(Map.Entry.comparingByValue())
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                        Long rightSpectra = peptideCount
+                                .entrySet()
+                                .iterator()
+                                .next()
+                                .getValue();
+            ret.add(new Tuple2<>(iCluster, new Tuple2<>(rightSpectra, peptideCount.entrySet().parallelStream().map(Map.Entry::getValue).reduce((sum, n)->sum+n).get() - rightSpectra)));
             return ret.iterator();
         });
 
+        Long totalRight = peptides.map(tuple -> tuple._2()._1()).reduce((acum, n) -> acum+n);
+        Long totalWrong =  peptides.map(tuple -> tuple._2()._2()).reduce((acum, n) -> acum+n);
 
 
-        return peptides.count();
+        return (double) totalWrong/(totalRight+totalWrong);
     }
 
 
