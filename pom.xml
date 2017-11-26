@@ -27,6 +27,26 @@
       </dependency>
 
       <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-sql_2.11</artifactId>
+          <version>${spark.version}</version>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-streaming_2.11</artifactId>
+          <version>${spark.version}</version>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-mllib_2.11</artifactId>
+          <version>${spark.version}</version>
+      </dependency>
+
+      <dependency>
           <groupId>org.scala-lang</groupId>
           <artifactId>scala-library</artifactId>
           <version>${scala-library.version}</version>
@@ -36,7 +56,7 @@
       <dependency>
           <groupId>uk.ac.ebi.pride.spectracluster</groupId>
           <artifactId>spectra-cluster</artifactId>
-          <version>${spectra-cluster.version}</version>
+          <version>1.0.11-SNAPSHOT</version>
       </dependency>
 
 	  <dependency>
@@ -56,9 +76,16 @@
           <artifactId>junit</artifactId>
           <version>4.11</version>
       </dependency>
-
-
-
+      <dependency>
+          <groupId>com.lordjoe.distributed</groupId>
+          <artifactId>SparkAccumulators</artifactId>
+          <version>0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+          <groupId>com.lordjoe.distributed</groupId>
+          <artifactId>SparkAccumulators</artifactId>
+          <version>0.1-SNAPSHOT</version>
+      </dependency>
 
 
   </dependencies>

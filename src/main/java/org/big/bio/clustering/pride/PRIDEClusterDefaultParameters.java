@@ -2,7 +2,7 @@ package org.big.bio.clustering.pride;
 
 
 import org.apache.hadoop.conf.Configuration;
-import org.big.bio.core.IConfigurationParameters;
+import org.big.bio.clustering.IConfigurationParameters;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -21,7 +21,6 @@ import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemoveIonContaminan
 import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemovePrecursorPeaksFunction;
 import uk.ac.ebi.pride.spectracluster.util.function.spectrum.RemoveWindowPeaksFunction;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +30,8 @@ import java.util.Properties;
  * by the user in the configuration file.
  *
  *
+ * @author Steve Lewis
+ * @author Rui Wang
  * @author Yasset Perez-Riverol
  *
  */
@@ -55,6 +56,9 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
 
     //Number of comparisons to be performed in the algorithm
     public static final int DEFAULT_MIN_NUMBER_COMPARISONS  = 10000;
+
+
+
 
     /**
      * If this option is > 0, a new clustering engine is being
@@ -153,7 +157,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
     public static final String CLUSTER_START_THRESHOLD_PROPERTY       = "pride.cluster.start.threshold";
 
     //PRIDE Cluster end threshold accuracy
-    public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.threshold";
+    public static final String CLUSTER_END_THRESHOLD_PROPERTY         = "pride.cluster.end.thershold";
 
     //This define the type of format that will be used to export the data in cluster
     public static final String CLUSTER_EXPORT_FORMAT_CDF_PROPERTY     = "pride.cluster.export.cdf.clustering";
@@ -187,7 +191,7 @@ public class PRIDEClusterDefaultParameters implements IConfigurationParameters {
         properties.setProperty(MAJOR_PEAK_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_MAJOR_PEAK_MZ_WINDOW, 3));
         properties.setProperty(SPECTRUM_MERGE_WINDOW_PROPERTY, NumberUtilities.formatDouble(PRIDEClusterDefaultParameters.DEFAULT_SPECTRUM_MERGE_WINDOW, 3));
         properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.getDefaultConsensusMinPeaks()));
-        properties.setProperty(CDF_MIN_NUMBER_COMPARISONS_PROPERTY, String.valueOf(PRIDEClusterDefaultParameters.DEFAULT_MIN_NUMBER_COMPARISONS));
+       properties.setProperty(CDF_MIN_NUMBER_COMPARISONS_PROPERTY, String.valueOf(PRIDEClusterDefaultParameters.DEFAULT_MIN_NUMBER_COMPARISONS));
         properties.setProperty(CONSENSUS_SPEC_MIN_PEAKS_PROPERTY, String.valueOf(Defaults.DEFAULT_CONSENSUS_MIN_PEAKS));
         properties.setProperty(SIMILARITY_CHECKER_PROPERTY, PRIDEClusterDefaultParameters.DEFAULT_SIMILARITY_CHECKER_CLASS);
         properties.setProperty(ENABLE_COMPARISON_PEAK_FILTER_PROPERTY, Boolean.toString(DEFAULT_ENABLE_COMPARISON_PEAK_FILTER));
